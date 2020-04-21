@@ -3,10 +3,11 @@ package bankATM;
 import java.time.*;
 import java.util.*;
 
-public class Transaction {
+public abstract class Transaction {
 	
 	private String id;
 	private LocalDateTime createdOn;
+	private double amount;
 
 	Transaction() {
 		this.setId(UUID.randomUUID().toString());
@@ -27,6 +28,14 @@ public class Transaction {
 
 	private void setCreatedOn(LocalDateTime createdOn) {
 		this.createdOn = createdOn;
+	}
+
+	public double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(double amount) {
+		this.amount = amount;
 	}
 	
 }

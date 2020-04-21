@@ -3,14 +3,16 @@ package bankATM;
 import java.time.*;
 import java.util.*;
 
-public abstract class Account {
+public abstract class Account implements ServiceFee {
+	
 	private String id;
 	private double balance;
 	private boolean status;
 	private LocalDateTime createdOn;
+	private double serviceFee = 1; // for every instance where a bank account is opened/closed 
 	private ArrayList<Transaction> transactions = new ArrayList<Transaction>();
 
-	Account() {
+	public Account() {
 		this.setId(UUID.randomUUID().toString());
 		this.setCreatedOn(LocalDateTime.now());
 	}
@@ -52,5 +54,23 @@ public abstract class Account {
 		//TODO
 	}
 	
+	public String toString() {
+		return "id: " + id + " Balance: " + balance;
+	}
 	
+	@Override
+	public double getServiceFee() {
+		return serviceFee;
+	}
+	
+	@Override
+	public void setServiceFee(double serviceFee) {
+		this.serviceFee = serviceFee;
+	}
+
+	@Override
+	public void deductServiceFee(double serviceFee) {
+		// TODO Auto-generated method stub
+		
+	}
 }
