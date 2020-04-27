@@ -2,15 +2,17 @@ package transaction;
 
 import java.sql.Date;
 
-import bankATM.Money;
-import bankATM.ServiceFee;
+import account.Account;
+import bankATM.*;
 
 public class Transfer extends Transaction implements ServiceFee {
 	
 	private Money serviceFee;
+	private Account destination;
 	
-	public Transfer(String id, Date created, Money amount) {
-		super(id, created, amount);
+	public Transfer(String id, Account account, Money amount, Money serviceFee, Date created, String status, Account destination) {
+		super(id, account, amount, serviceFee, created, status);
+		setDestination(destination);
 	}
 
 	@Override
@@ -20,8 +22,15 @@ public class Transfer extends Transaction implements ServiceFee {
 
 	@Override
 	public void setServiceFee(Money serviceFee) {
-		// TODO Auto-generated method stub
-		
+		this.serviceFee = serviceFee;
+	}
+
+	public Account getDestination() {
+		return destination;
+	}
+
+	public void setDestination(Account destination) {
+		this.destination = destination;
 	}
 
 }

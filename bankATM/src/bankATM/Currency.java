@@ -7,11 +7,11 @@ public enum Currency {
 	GBP("GBP", (float) 0.75), 
 	JPY("JPY", (float) 102.68);
 
-	public String string;
+	public String currency;
 	public float rate;
 
-	Currency(String string, float rate) {
-		this.string = string;
+	Currency(String currency, float rate) {
+		this.currency = currency;
 		this.rate = rate;
 	}
 
@@ -20,6 +20,6 @@ public enum Currency {
 	}
 
 	public String toString() {
-		return string;
+		return currency;
 	}
 }

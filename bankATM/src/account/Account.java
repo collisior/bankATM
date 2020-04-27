@@ -10,6 +10,7 @@ public abstract class Account {
 	private String id;
 	private Client client;
 	private String status;
+	private String type;
 	private Money balance;
 	private Date created;
 

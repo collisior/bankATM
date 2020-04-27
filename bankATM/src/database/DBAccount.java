@@ -57,7 +57,7 @@ public class DBAccount implements CRUDInterface<Account> {
 	}
 
 	@Override
-	public Account retrieve(Account t) throws SQLException {
+	public Account retrieve(Account account) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}

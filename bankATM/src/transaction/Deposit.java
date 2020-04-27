@@ -2,14 +2,15 @@ package transaction;
 
 import java.sql.Date;
 
-import bankATM.Money;
+import account.*;
+import bankATM.*;
 
 public class Deposit extends Transaction {
 	
 	private Money serviceFee;
 	
-	public Deposit(String id, Date created, Money amount) {
-		super(id, created, amount);
+	public Deposit(String id, Account account, Money amount, Money serviceFee, Date created, String status) {
+		super(id, account, amount, serviceFee, created, status);
 	}
 
 	@Override
