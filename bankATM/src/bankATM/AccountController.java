@@ -1,5 +1,7 @@
 package bankATM;
 
+import account.Account;
+
 public interface AccountController {
 	
 	public abstract boolean openAccount(Client client, Account account);

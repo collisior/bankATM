@@ -1,6 +1,8 @@
-package bankATM;
+package transaction;
 
 import java.sql.Date;
+
+import bankATM.Money;
 
 public class Deposit extends Transaction {
 	

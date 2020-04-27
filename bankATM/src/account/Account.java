@@ -1,16 +1,19 @@
-package bankATM;
+package account;
 
 import java.sql.Date;
+
+import bankATM.Client;
+import bankATM.Money;
 
 public abstract class Account {
 	
 	private String id;
 	private Client client;
-	private boolean status;
+	private String status;
 	private Money balance;
 	private Date created;
 
-	public Account(String id, Client client, boolean status, Money balance, Date created) {
+	public Account(String id, Client client, String status, Money balance, Date created) {
 		setId(id);
 		setClient(client);
 		setStatus(status);
@@ -34,11 +37,11 @@ public abstract class Account {
 		this.client = client;
 	}
 
-	public boolean isStatus() {
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(boolean status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 

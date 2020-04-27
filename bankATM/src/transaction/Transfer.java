@@ -1,6 +1,9 @@
-package bankATM;
+package transaction;
 
 import java.sql.Date;
+
+import bankATM.Money;
+import bankATM.ServiceFee;
 
 public class Transfer extends Transaction implements ServiceFee {
 	

@@ -9,10 +9,10 @@ public class Loan implements Interest {
 	private Money amount;
 	private Date requested;
 	private Date approved;
-	private double interest;
+	private float interest;
 	private String status;
 	
-	Loan(String id, Client client, Money amount, Date requested, double interest) {
+	Loan(String id, Client client, Money amount, Date requested, float interest) {
 		this.setId(id);
 		this.setClient(client);
 		this.setAmount(amount);
@@ -68,16 +68,16 @@ public class Loan implements Interest {
 		this.status = status;
 	}
 
+
 	@Override
-	public double getInterest() {
+	public float getInterest() {
 		// TODO Auto-generated method stub
-		return 0;
+		return interest;
 	}
 
 	@Override
-	public void setInterest(double interest) {
+	public void setInterest(float interest) {
 		this.interest = interest;
-		
 	}
 	
 

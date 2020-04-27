@@ -2,19 +2,19 @@ package bankATM;
 
 public class Money {
 
-	private double value; // USD
+	private float value; // USD
 	private Currency currency;
 
-	Money(double value, Currency currency) {
+	public Money(float value, Currency currency) {
 		this.setValue(value);
 		this.setCurrency(currency);
 	}
 
-	public double getValue() {
+	public float getValue() {
 		return value;
 	}
 
-	public void setValue(double value) {
+	public void setValue(float value) {
 		this.value = value;
 	}
 
@@ -26,11 +26,13 @@ public class Money {
 		this.currency = currency;
 	}
 
-	public double getConversion(Currency otherCurrency) {
+	public float getConversion(Currency otherCurrency) {
 		return value * otherCurrency.getRate();
 	}
 	
 	public String toString() {
-		return "" + value * currency.getRate() + currency;
+		float total = value * currency.getRate() ;
+		 
+		return "" + String.format("%.02f", total) + " " +currency;
 	}
 }

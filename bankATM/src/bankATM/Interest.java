@@ -2,7 +2,7 @@ package bankATM;
 
 public interface Interest {
 	
-	public abstract double getInterest();
+	public abstract float getInterest();
 
-	public abstract void setInterest(double interest);
+	public abstract void setInterest(float interest);
 }

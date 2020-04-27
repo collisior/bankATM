@@ -2,6 +2,8 @@ package bankATM;
 
 import java.util.*;
 
+import account.Account;
+
 public class Manager implements AccountController, LoanController, StockController, ServiceFeeController, InterestController {
 
 	private String id;
@@ -52,14 +54,14 @@ public class Manager implements AccountController, LoanController, StockControll
 
 
 	@Override
-	public void setSavingsInterest(double interest) {
+	public void setSavingsInterest(float interest) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
 	@Override
-	public void setLoanInterest(double interest) {
+	public void setLoanInterest(floatfloat interest) {
 		// TODO Auto-generated method stub
 		
 	}

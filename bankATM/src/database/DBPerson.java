@@ -5,29 +5,29 @@ import java.util.UUID;
 
 import bankATM.*;
 
-public class dbPerson {
+public class DBPerson implements CRUDInterface<Person> {
 
-	static Connection con = DataBaseConnection.getConnection();
+	Connection conn = DataBaseConnection.getConnection();
 
-	static String tableName = "Person";
+	String tableName = "Person";
 
 	public static void main(String[] args) throws SQLException {
+		DBPerson testObj = new DBPerson();
 		String id = UUID.randomUUID().toString();
 		Date date = new Date(2001, 12, 1);
 		Person testPerson = new Person(id, "testName", "testLast", date, "000-test-phone", "testCity", "testCountry");
-		createPerson(testPerson);
-		deletePerson(testPerson);
+		testObj.create(testPerson);
+		testObj.delete(testPerson);
 	}
-
 	/*
 	 * Insert Person into database table Person.
 	 */
-	public static void createPerson(Person person) throws SQLException {
-
+	@Override
+	public void create(Person person) throws SQLException {
 		String sql = "INSERT INTO " + tableName
 				+ " (id, first_name, last_name, birth_date, phone, city, country) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-		PreparedStatement statement = con.prepareStatement(sql);
+		PreparedStatement statement = conn.prepareStatement(sql);
 
 		statement.setString(1, person.getId());
 		statement.setString(2, person.getFirstName());
@@ -42,12 +42,19 @@ public class dbPerson {
 		if (rowsInserted > 0) {
 			System.out.println("A new Person was created successfully!");
 		}
-
 	}
 
-	public static Person getPersonById(String id) throws SQLException {
+	@Override
+	public Person retrieve(Person person) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Person retrieveById(String id) throws SQLException {
 		Person person = null;
-		PreparedStatement statement = con.prepareStatement("SELECT id, name, email from " + tableName);
+		PreparedStatement statement = conn.prepareStatement(
+				"SELECT id, first_name, last_name, birth_date, phone, city, country FROM " + tableName);
 		ResultSet resultSet = statement.executeQuery();
 
 		while (resultSet.next()) {
@@ -71,11 +78,25 @@ public class dbPerson {
 		return person;
 	}
 
-	public static void deletePersonById(String id) throws SQLException {
+	@Override
+	public void delete(Person person) throws SQLException {
+		String sql = "DELETE FROM " + tableName + " WHERE id = '" + person.getId() + "'";
+		Statement stmt;
+		try {
+			stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
+			System.out.println("Person: " + person.getId() + " deleted successfully from db");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void deleteById(String id) throws SQLException {
 		String sql = "DELETE FROM " + tableName + " WHERE id = '" + id + "';";
 		Statement stmt;
 		try {
-			stmt = con.createStatement();
+			stmt = conn.createStatement();
 			stmt.executeUpdate(sql);
 			System.out.println("Person: " + id + " deleted successfully from db");
 		} catch (SQLException e) {
@@ -83,15 +104,15 @@ public class dbPerson {
 		}
 	}
 
-	public static void deletePerson(Person person) throws SQLException {
-		String sql = "DELETE FROM " + tableName + " WHERE id = '" + person.getId() + "'";
-		Statement stmt;
-		try {
-			stmt = con.createStatement();
-			stmt.executeUpdate(sql);
-			System.out.println("Person: " + person.getId() + " deleted successfully from db");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	@Override
+	public void update(Person person) throws SQLException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void updateById(String id) throws SQLException {
+		// TODO Auto-generated method stub
+
 	}
 }

@@ -10,7 +10,7 @@ public class Client {
 	private String email;
 	private String password;
 		
-	Client(String id, Person person, Date created, String email, String password) {
+	public Client(String id, Person person, Date created, String email, String password) {
 		this.setId(id);
 		this.setPerson(person);
 		this.setCreated(created);

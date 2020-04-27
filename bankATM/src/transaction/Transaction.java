@@ -1,6 +1,9 @@
-package bankATM;
+package transaction;
 
 import java.sql.Date;
+
+import bankATM.Money;
+import bankATM.ServiceFee;
 
 public abstract class Transaction implements ServiceFee {
 	
@@ -40,7 +43,7 @@ public abstract class Transaction implements ServiceFee {
 	}
 
 	public String toString() {
-		return "Transaction: " + id + " \nAmount: " + amount + " \nDate: " + created);  
+		return "Transaction: " + id + " \nAmount: " + amount + " \nDate: " + created;  
 	}
 	
 }
