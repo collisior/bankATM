@@ -1,29 +1,24 @@
 package bankATM;
 
+import java.sql.Date;
+
 public class Withdraw extends Transaction implements ServiceFee {
 	
-	private double serviceFee;
+	private Money serviceFee;
 	
-	public Withdraw() {
-		super();
+	public Withdraw(String id, Date created, Money amount) {
+		super(id, created, amount);
 	}
 
 	@Override
-	public double getServiceFee() {
+	public Money getServiceFee() {
 		// TODO Auto-generated method stub
 		return serviceFee;
 	}
 
 	@Override
-	public void setServiceFee(double serviceFee) {
-		// TODO Auto-generated method stub
+	public void setServiceFee(Money serviceFee) {
+		this.serviceFee = serviceFee;
 		
 	}
-
-	@Override
-	public void deductServiceFee(double serviceFee) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

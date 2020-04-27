@@ -4,5 +4,5 @@ public interface Interest {
 	
 	public abstract double getInterest();
 
-	public abstract void setInterest();
+	public abstract void setInterest(double interest);
 }

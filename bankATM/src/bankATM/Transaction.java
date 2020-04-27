@@ -1,18 +1,19 @@
 package bankATM;
 
-import java.time.*;
-import java.util.*;
+import java.sql.Date;
 
-public abstract class Transaction {
+public abstract class Transaction implements ServiceFee {
 	
 	private String id;
-	private LocalDateTime createdOn;
-	private double amount;
+	private Date created;
+	private Money amount;
 
-	Transaction() {
-		this.setId(UUID.randomUUID().toString());
-		this.setCreatedOn(LocalDateTime.now());
+	Transaction(String id, Date created, Money amount) {
+		setId(id);
+		setCreated(created);
+		setAmount(amount);
 	}
+
 
 	public String getId() {
 		return id;
@@ -21,21 +22,25 @@ public abstract class Transaction {
 	private void setId(String id) {
 		this.id = id;
 	}
-
-	public LocalDateTime getCreatedOn() {
-		return createdOn;
+	
+	public Date getCreated() {
+		return created;
 	}
 
-	private void setCreatedOn(LocalDateTime createdOn) {
-		this.createdOn = createdOn;
+	private void setCreated(Date created) {
+		this.created = created;
 	}
-
-	public double getAmount() {
+	
+	public Money getAmount() {
 		return amount;
 	}
 
-	public void setAmount(double amount) {
+	public void setAmount(Money amount) {
 		this.amount = amount;
+	}
+
+	public String toString() {
+		return "Transaction: " + id + " \nAmount: " + amount + " \nDate: " + created);  
 	}
 	
 }

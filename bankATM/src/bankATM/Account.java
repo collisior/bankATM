@@ -1,20 +1,21 @@
 package bankATM;
 
-import java.time.*;
-import java.util.*;
+import java.sql.Date;
 
-public abstract class Account implements ServiceFee {
+public abstract class Account {
 	
 	private String id;
-	private double balance;
+	private Client client;
 	private boolean status;
-	private LocalDateTime createdOn;
-	private double serviceFee = 1; // for every instance where a bank account is opened/closed 
-	private ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+	private Money balance;
+	private Date created;
 
-	public Account() {
-		this.setId(UUID.randomUUID().toString());
-		this.setCreatedOn(LocalDateTime.now());
+	public Account(String id, Client client, boolean status, Money balance, Date created) {
+		setId(id);
+		setClient(client);
+		setStatus(status);
+		setBalance(balance);
+		setCreated(created);
 	}
 
 	public String getId() {
@@ -25,14 +26,13 @@ public abstract class Account implements ServiceFee {
 		this.id = id;
 	}
 
-	public LocalDateTime getCreatedOn() {
-		return createdOn;
+	public Client getClient() {
+		return client;
 	}
 
-	public void setCreatedOn(LocalDateTime createdOn) {
-		this.createdOn = createdOn;
+	public void setClient(Client client) {
+		this.client = client;
 	}
-	
 
 	public boolean isStatus() {
 		return status;
@@ -42,35 +42,23 @@ public abstract class Account implements ServiceFee {
 		this.status = status;
 	}
 
-	public double getBalance() {
+	public Money getBalance() {
 		return balance;
 	}
 
-	public void setBalance(double balance) {
+	public void setBalance(Money balance) {
 		this.balance = balance;
 	}
-	
-	public void deposit(double amount) {
-		//TODO
+
+	public Date getCreated() {
+		return created;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
 	}
 	
 	public String toString() {
 		return "id: " + id + " Balance: " + balance;
-	}
-	
-	@Override
-	public double getServiceFee() {
-		return serviceFee;
-	}
-	
-	@Override
-	public void setServiceFee(double serviceFee) {
-		this.serviceFee = serviceFee;
-	}
-
-	@Override
-	public void deductServiceFee(double serviceFee) {
-		// TODO Auto-generated method stub
-		
 	}
 }

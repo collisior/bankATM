@@ -1,34 +1,84 @@
 package bankATM;
 
+import java.util.*;
+
 public class Loan implements Interest {
 	
-	private double amount;
+	private String id;
+	private Client client;
+	private Money amount;
+	private Date requested;
+	private Date approved;
 	private double interest;
+	private String status;
 	
-	Loan(double amount) {
+	Loan(String id, Client client, Money amount, Date requested, double interest) {
+		this.setId(id);
+		this.setClient(client);
 		this.setAmount(amount);
-		this.setInterest();
+		this.setInterest(interest);
+		this.setRequested(requested);
+	}
+	
+	public String getId() {
+		return id;
 	}
 
-	public double getAmount() {
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
+	}
+	
+	public Money getAmount() {
 		return amount;
 	}
 
-	public void setAmount(double amount) {
+	public void setAmount(Money amount) {
 		this.amount = amount;
+	}
+
+	public Date getRequested() {
+		return requested;
+	}
+
+	public void setRequested(Date requested) {
+		this.requested = requested;
+	}
+
+	public Date getApproved() {
+		return approved;
+	}
+
+	public void setApproved(Date approved) {
+		this.approved = approved;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	@Override
 	public double getInterest() {
-		return interest;
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setInterest(double interest) {
+		this.interest = interest;
+		
 	}
 	
-	@Override
-	public void setInterest() {
-		/*
-		 * TODO: calculate interest based on amount
-		 */
-		this.interest = amount * 0.01;
-	}
 
 }

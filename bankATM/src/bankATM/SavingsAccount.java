@@ -1,12 +1,13 @@
 package bankATM;
 
+import java.sql.Date;
 
 public class SavingsAccount extends Account implements Interest {
 
 	private double interest = 0;
-	
-	SavingsAccount() {
-		super();
+
+	SavingsAccount(String id, Client client, boolean status, Money balance, Date created) {
+		super(id, client, status, balance, created);
 	}
 
 	@Override
@@ -16,13 +17,8 @@ public class SavingsAccount extends Account implements Interest {
 	}
 
 	@Override
-	public void setInterest() {
-		/*
-		 * TODO: handle “high balance” interest earnings
-		 */
-		if(getBalance() > 10000) {
-			this.interest = 0.01;
-		}
+	public void setInterest(double interest) {
+		this.interest = interest;
 	}
 
 }

@@ -1,24 +1,35 @@
 package bankATM;
 
-import java.util.*;
+import java.sql.Date;
 
 public class Person {
+	private String id;
 	private String firstName;
 	private String lastName;
-	private Date birthdayDate;
-	private String address;
+	private Date birthDate;
 	private String phone;
-	private String email; //also used as username
+	private String city;
+	private String country;
 
-	Person(String firstName, String lastName, Date birthdayDate, String address, String phone, String email) {
+	public Person(String id, String firstName, String lastName, Date birthDate, String phone, String city, String country) {
+		setId(id);
 		setFirstName(firstName);
 		setLastName(lastName);
-		setBirthdayDate(birthdayDate);
-		setAddress(address);
+		setBirthDate(birthDate);
 		setPhone(phone);
-		setEmail(email);
+		setCity(city);
+		setCountry(country);
 	}
 
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+	
 	public String getFirstName() {
 		return firstName;
 	}
@@ -34,21 +45,13 @@ public class Person {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-
-	public Date getBirthdayDate() {
-		return birthdayDate;
+	
+	public Date getBirthDate() {
+		return birthDate;
 	}
 
-	public void setBirthdayDate(Date birthdayDate) {
-		this.birthdayDate = birthdayDate;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
 	}
 
 	public String getPhone() {
@@ -59,16 +62,26 @@ public class Person {
 		this.phone = phone;
 	}
 	
-	public String getEmail() {
-		return email;
+	public String getCity() {
+		return city;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setCity(String city) {
+		this.city = city;
 	}
-	
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
 	public String toString() {
 		return firstName + " " + lastName;
 	}
+
+
 
 }
