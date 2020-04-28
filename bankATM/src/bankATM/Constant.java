@@ -38,6 +38,11 @@ public class Constant {
 		Withdraw("Withdraw"), 
 		Deposit("Deposit"), 
 		Transfer("Transfer"), 
+		InterestEarned("Interest Earned"),
+		LoanRequest("Loan Request"), 
+		LoanApproved("Loan Approved"), 
+		StockPurchased("Stock Purchased"), 
+		StockSold("Stock Sold"), 
 		Savings("Savings"), 
 		Checking("Checking"),
 		Security("Security");
