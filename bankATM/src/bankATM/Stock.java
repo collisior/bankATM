@@ -16,6 +16,7 @@ public class Stock {
 		setName(name);
 		setPrice(price);
 		setQuantity(quantity);
+		setCreated(created);
 		setStatus(status);
 	}
 
@@ -67,5 +68,7 @@ public class Stock {
 		this.created = created;
 	}
 	
-	
+	public String toString() {
+		return name;
+	}
 }

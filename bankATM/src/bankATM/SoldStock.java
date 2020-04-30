@@ -25,6 +25,7 @@ public class SoldStock {
 		setQuantity(quantity);
 		setType(Type.SoldStock);
 		setStatus(getStatus());
+		setCreated(created);
 	}
 
 	public String getId() {
@@ -100,6 +101,10 @@ public class SoldStock {
 
 	public void setAccount(Account account) {
 		this.account = account;
+	}
+	
+	public String toString() {
+		return "Sold Stock: "+ stock.getName() + ", price : " + getSoldPrice();
 	}
 
 }

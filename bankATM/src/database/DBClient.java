@@ -10,22 +10,29 @@ public class DBClient implements CRUDInterface<Client> {
 	Connection conn = DataBaseConnection.getConnection();
 
 	String tableName = "Clients";
-	String columns = " (id, email, password, created, person_id) ";
+	String columns = " id, email, password, created, person_id ";
 
 	/*
 	 * Client(String id, Person person, Date created, String email, String password)
 	 */
 	public static void main(String[] args) throws SQLException {
-		DBClient testObj = new DBClient();
+
 		String id = UUID.randomUUID().toString();
 		Date date = new Date(2001, 12, 1);
-		Person testPerson = new Person(id, "testName", "testLast", date, "000-test-phone", "testCity", "testCountry");
 
+		DBPerson testObjPerson = new DBPerson();
+		id = "55878b5b-b306-4023-a4df-62f3fe6fe42b";
+		Person testPerson = testObjPerson.retrieveById(id);
+
+		DBClient testObj = new DBClient();
 		id = UUID.randomUUID().toString();
+		id = "c7577a78-ec82-4e04-85c6-468f029617e6";
+		
 		Client testClient = new Client(id, testPerson, date, "testEmail", "testPassword");
-
-		testObj.create(testClient);
-		testObj.delete(testClient);
+		
+		testObj.retrieveById(id);
+//		testObj.create(testClient);
+//		testObj.delete(testClient);
 	}
 
 	/*
@@ -34,7 +41,7 @@ public class DBClient implements CRUDInterface<Client> {
 	@Override
 	public void create(Client client) throws SQLException {
 
-		String sql = "INSERT INTO " + tableName + columns + " VALUES (?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES (?, ?, ?, ?, ?)";
 
 		PreparedStatement statement = conn.prepareStatement(sql);
 
@@ -63,7 +70,8 @@ public class DBClient implements CRUDInterface<Client> {
 		DBPerson dbPersonObj = new DBPerson();
 
 		Client client = null;
-		PreparedStatement statement = conn.prepareStatement("SELECT " + columns + " FROM " + tableName);
+		PreparedStatement statement = conn
+				.prepareStatement("SELECT " + columns + " FROM " + tableName + " WHERE id = '" + id + "';");
 		ResultSet resultSet = statement.executeQuery();
 
 		while (resultSet.next()) {

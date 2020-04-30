@@ -13,31 +13,32 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 	Connection conn = DataBaseConnection.getConnection();
 
 	String tableName = "Transactions";
-	String columns = "(id, account_id, client_id, amount, created, status, type, destination_account_id) ";
+	String columns = " id, account_id, client_id, amount, created, status, type, destination_account_id ";
 
 	public static void main(String[] args) throws SQLException {
-		DBTransaction testObj = new DBTransaction();
+		
 		String id = UUID.randomUUID().toString();
 		Date date = new Date(2001, 12, 1);
-		Person testPerson = new Person(id, "testName", "testLast", date, "000-test-phone", "testCity", "testCountry");
+		
+		DBAccount testObjAcc = new DBAccount();
+		id = "6bf61a1e-0697-4b08-a0ff-86d6cb3d70b9";
+		Account testAcc = testObjAcc.retrieveById(id);
+		
+		
 		id = UUID.randomUUID().toString();
-		Client testClient = new Client(id, testPerson, date, "testEmail", "testPassword");
-		id = UUID.randomUUID().toString();
-		Account testAcc = new CheckingAccount(id, testClient, "stausTest", new Money(120, Currency.USD), date);
-		id = UUID.randomUUID().toString();
-
+		id = "df215b5d-066b-462b-91e4-462ee2395980";
+		DBTransaction testObj = new DBTransaction();
 		Transaction testTransaction = new Withdraw(id, testAcc, new Money(121, Currency.USD), date, Status.Pending);
 
-		testObj.create(testTransaction);
-		testObj.delete(testTransaction);
+		testObj.retrieveById(id);
 	}
 
 	/*
-	 * Insert Person into database table Person.
+	 * Insert Transaction into database table Transactions.
 	 */
 	@Override
 	public void create(Transaction transaction) throws SQLException {
-		String sql = "INSERT INTO " + tableName + columns + " VALUES (?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 		PreparedStatement statement = conn.prepareStatement(sql);
 
@@ -47,11 +48,12 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 		statement.setFloat(4, transaction.getAmount().getValue());
 		statement.setDate(5, transaction.getCreated());
 		statement.setString(6, transaction.getStatus().str);
-
 		statement.setString(7, transaction.getType().str);
 
 		if (transaction instanceof Transfer) {
 			statement.setString(8, ((Transfer) transaction).getDestination().getId());
+		} else {
+			statement.setString(8, "N/A");
 		}
 
 		int rowsInserted = statement.executeUpdate();
@@ -63,7 +65,9 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 
 	@Override
 	public Transaction retrieve(Transaction transaction) throws SQLException {
-		// TODO Auto-generated method stub
+		if (transaction != null ) {
+			return retrieveById(transaction.getId());
+		}
 		return null;
 	}
 
@@ -71,7 +75,8 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 	public Transaction retrieveById(String id) throws SQLException {
 		DBAccount dbAccObj = new DBAccount();
 		Transaction transaction = null;
-		PreparedStatement statement = conn.prepareStatement("SELECT " + columns + " FROM " + tableName);
+		PreparedStatement statement = conn
+				.prepareStatement("SELECT " + columns + " FROM " + tableName + " WHERE id = '" + id + "';");
 		ResultSet resultSet = statement.executeQuery();
 
 		while (resultSet.next()) {
@@ -82,9 +87,9 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 				Date created = resultSet.getDate("created");
 				String statusStr = resultSet.getString("status");
 				String type = resultSet.getString("type");
-				
+
 				Status status = null;
-				
+
 				if (Status.Completed.equals(statusStr)) {
 					status = Status.Completed;
 				} else if (Status.Pending.equals(statusStr)) {

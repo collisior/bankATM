@@ -80,5 +80,9 @@ public class PurchasedStock {
 		this.account = account;
 	}
 	
+	public String toString() {
+		return "Purchased Stock: "+ stock.getName() + ", price : " + getPurchasedPrice();
+	}
+	
 	
 }

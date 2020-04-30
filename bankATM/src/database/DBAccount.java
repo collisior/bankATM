@@ -11,25 +11,32 @@ public class DBAccount implements CRUDInterface<Account> {
 	Connection conn = DataBaseConnection.getConnection();
 
 	String tableName = "Accounts";
-	String columns = " (id, client_id, status, type, balance, created) ";
+	String columns = " id, client_id, status, type, balance, created ";
 
 	/*
 	 * Account(String id, Client client, boolean status, Money balance, Date
 	 * created)
 	 */
 	public static void main(String[] args) throws SQLException {
-		DBAccount testObj = new DBAccount();
+		
 		String id = UUID.randomUUID().toString();
+		
 		Date date = new Date(2001, 12, 1);
-		Person testPerson = new Person(id, "testName", "testLast", date, "000-test-phone", "testCity", "testCountry");
-
+		
+		DBPerson testObjPerson = new DBPerson();
+		id = "55878b5b-b306-4023-a4df-62f3fe6fe42b";
+		Person testPerson = testObjPerson.retrieveById(id);
+		
+		id = "c7577a78-ec82-4e04-85c6-468f029617e6";
 		Client testClient = new Client(id, testPerson, date, "testEmail", "testPassword");
 
-		id = UUID.randomUUID().toString();
+		DBAccount testObj = new DBAccount();
+		id = "6bf61a1e-0697-4b08-a0ff-86d6cb3d70b9";
 		Account testAcc = new CheckingAccount(id, testClient, "stausTest", new Money(120, Currency.USD), date);
 
-		testObj.create(testAcc);
-		testObj.delete(testAcc);
+//		testObj.create(testAcc);
+//		testObj.delete(testAcc);
+		
 	}
 
 	/*
@@ -37,7 +44,7 @@ public class DBAccount implements CRUDInterface<Account> {
 	 */
 	@Override
 	public void create(Account account) throws SQLException {
-		String sql = "INSERT INTO " + tableName + " " + columns + " VALUES (?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES (?, ?, ?, ?, ?, ?)";
 
 		PreparedStatement statement = conn.prepareStatement(sql);
 
@@ -58,7 +65,9 @@ public class DBAccount implements CRUDInterface<Account> {
 
 	@Override
 	public Account retrieve(Account account) throws SQLException {
-		// TODO Auto-generated method stub
+		if (account != null ) {
+			return retrieveById(account.getId());
+		}
 		return null;
 	}
 
@@ -67,7 +76,8 @@ public class DBAccount implements CRUDInterface<Account> {
 		DBClient dbClientObj = new DBClient();
 
 		Account account = null;
-		PreparedStatement statement = conn.prepareStatement("SELECT " + columns + " FROM " + tableName);
+		PreparedStatement statement = conn
+				.prepareStatement("SELECT " + columns + " FROM " + tableName + " WHERE id = '" + id + "';");
 		ResultSet resultSet = statement.executeQuery();
 
 		while (resultSet.next()) {

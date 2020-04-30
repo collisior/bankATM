@@ -11,19 +11,21 @@ public class DBPurchasedStocks implements CRUDInterface<PurchasedStock> {
 	Connection conn = DataBaseConnection.getConnection();
 
 	String tableName = "Purchased_Stocks";
-	String columns = " (id, stock_id, account_id, purchased_price, quantity, created) ";
+	String columns = " id, stock_id, account_id, purchased_price, quantity, created ";
 
 	public static void main(String[] args) throws SQLException {
 		DBPurchasedStocks testObj = new DBPurchasedStocks();
 		String id = UUID.randomUUID().toString();
 		Date date = new Date(2001, 12, 1);
-		Person testPerson = new Person(id, "testName", "testLast", date, "000-test-phone", "testCity", "testCountry");
 
-		Client testClient = new Client(id, testPerson, date, "testEmail", "testPassword");
-
-		id = UUID.randomUUID().toString();
-		Account testAcc = new CheckingAccount(id, testClient, "stausTest", new Money(120, Currency.USD), date);
-		Stock stock = new Stock(id, id, new Money(2222, Currency.USD), 5, date, null);
+		DBAccount testObjAcc = new DBAccount();
+		id = "6bf61a1e-0697-4b08-a0ff-86d6cb3d70b9";
+		Account testAcc = testObjAcc.retrieveById(id);
+		
+		
+		id = "c3d8e51e-bd16-47a2-a2db-30da8b42e6cb";
+		Stock stock = new Stock(id, testAcc.getId(), new Money(2222, Currency.USD), 5, date, null);
+		
 		PurchasedStock testStock = new PurchasedStock(id, stock, testAcc, new Money(2222, Currency.USD), 2, date);
 		testObj.create(testStock);
 		testObj.delete(testStock);
@@ -35,7 +37,7 @@ public class DBPurchasedStocks implements CRUDInterface<PurchasedStock> {
 
 	@Override
 	public void create(PurchasedStock stock) throws SQLException {
-		String sql = "INSERT INTO " + tableName + columns + " VALUES (?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES (?, ?, ?, ?, ?, ?)";
 
 		PreparedStatement statement = conn.prepareStatement(sql);
 
@@ -56,7 +58,9 @@ public class DBPurchasedStocks implements CRUDInterface<PurchasedStock> {
 
 	@Override
 	public PurchasedStock retrieve(PurchasedStock stock) throws SQLException {
-		// TODO Auto-generated method stub
+		if (stock != null ) {
+			return retrieveById(stock.getId());
+		}
 		return null;
 	}
 
@@ -67,7 +71,8 @@ public class DBPurchasedStocks implements CRUDInterface<PurchasedStock> {
 
 		PurchasedStock stock = null;
 
-		PreparedStatement statement = conn.prepareStatement("SELECT " + columns + " FROM " + tableName);
+		PreparedStatement statement = conn
+				.prepareStatement("SELECT " + columns + " FROM " + tableName + " WHERE id = '" + id + "';");
 		ResultSet resultSet = statement.executeQuery();
 
 		while (resultSet.next()) {

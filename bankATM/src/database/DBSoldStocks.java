@@ -11,23 +11,28 @@ public class DBSoldStocks implements CRUDInterface<SoldStock> {
 	Connection conn = DataBaseConnection.getConnection();
 
 	String tableName = "Sold_Stocks";
-	String columns = " (id, stock_id, account_id, purchased_price, quantity, created, sold_price, status) ";
+	String columns = " id, stock_id, account_id, purchased_price, quantity, created, sold_price, status ";
 
 	public static void main(String[] args) throws SQLException {
-		DBSoldStocks testObj = new DBSoldStocks();
-		String id = UUID.randomUUID().toString();
-		Date date = new Date(2001, 12, 1);
-		Person testPerson = new Person(id, "testName", "testLast", date, "000-test-phone", "testCity", "testCountry");
 
-		Client testClient = new Client(id, testPerson, date, "testEmail", "testPassword");
+		DBAccount testObjAcc = new DBAccount();
+		String id = "6bf61a1e-0697-4b08-a0ff-86d6cb3d70b9";
+		Account testAcc = testObjAcc.retrieveById(id);
+
+		DBStocks testObjStock = new DBStocks();
+		id = "89121250-47d9-4ff6-bf59-4589e5c5030a";
+		Stock stock = testObjStock.retrieveById(id);
+
+		Date date = new Date(1990, 12, 1);
 
 		id = UUID.randomUUID().toString();
-		Account testAcc = new CheckingAccount(id, testClient, "stausTest", new Money(120, Currency.USD), date);
-		Stock stock = new Stock(id, id, new Money(2222, Currency.USD), 5, date, null);
+		DBSoldStocks DBSoldStocksObj = new DBSoldStocks();
+		id = "a8d7dccd-447e-4c66-9d14-62c8e472c51c";
 		SoldStock testStock = new SoldStock(id, stock, testAcc, new Money(2222, Currency.USD),
 				new Money(2222, Currency.USD), 2, date);
-		testObj.create(testStock);
-		testObj.delete(testStock);
+		DBSoldStocksObj.retrieveById(id);
+//		DBSoldStocksObj.create(testStock);
+//		DBSoldStocksObj.delete(testStock);
 	}
 
 	/*
@@ -36,7 +41,7 @@ public class DBSoldStocks implements CRUDInterface<SoldStock> {
 
 	@Override
 	public void create(SoldStock stock) throws SQLException {
-		String sql = "INSERT INTO " + tableName + columns + " VALUES (?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 		PreparedStatement statement = conn.prepareStatement(sql);
 
@@ -59,7 +64,9 @@ public class DBSoldStocks implements CRUDInterface<SoldStock> {
 
 	@Override
 	public SoldStock retrieve(SoldStock stock) throws SQLException {
-		// TODO Auto-generated method stub
+		if (stock != null ) {
+			return retrieveById(stock.getId());
+		}
 		return null;
 	}
 
@@ -70,7 +77,8 @@ public class DBSoldStocks implements CRUDInterface<SoldStock> {
 
 		SoldStock stock = null;
 
-		PreparedStatement statement = conn.prepareStatement("SELECT " + columns + " FROM " + tableName);
+		PreparedStatement statement = conn
+				.prepareStatement("SELECT " + columns + " FROM " + tableName + " WHERE id = '" + id + "';");
 		ResultSet resultSet = statement.executeQuery();
 
 		while (resultSet.next()) {

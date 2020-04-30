@@ -10,7 +10,7 @@ public class DBBank implements CRUDInterface<Bank> {
 	Connection conn = DataBaseConnection.getConnection();
 
 	String tableName = "Bank";
-	String columns = " (name, checking_account_fee, withdraw_fee, savings_interest, loans_interest, current_date, balance) ";
+	String columns = " name, checking_account_fee, withdraw_fee, savings_interest, loans_interest, current_date, balance ";
 
 	public static void main(String[] args) throws SQLException {
 		DBBank testObj = new DBBank();
@@ -29,7 +29,7 @@ public class DBBank implements CRUDInterface<Bank> {
 	 */
 	@Override
 	public void create(Bank bank) throws SQLException {
-		String sql = "INSERT INTO " + tableName +" " + columns + " VALUES (?, ?, ?, ?, ?, ?) ;";
+		String sql = "INSERT INTO " + tableName +" (" + columns + ") VALUES (?, ?, ?, ?, ?, ?) ;";
 
 		PreparedStatement statement = conn.prepareStatement(sql);
 
@@ -53,7 +53,9 @@ public class DBBank implements CRUDInterface<Bank> {
 
 	@Override
 	public Bank retrieve(Bank bank) throws SQLException {
-		// TODO Auto-generated method stub
+		if (bank != null ) {
+			return retrieveById(bank.getName());
+		}
 		return null;
 	}
 
@@ -80,7 +82,7 @@ public class DBBank implements CRUDInterface<Bank> {
 		if (bank == null) {
 			System.out.println("No bank with id: " + name);
 		} else {
-			System.out.println("A bank fetched successfully! Person: " + bank);
+			System.out.println("A bank fetched successfully! Bank Name: " + bank);
 		}
 		return bank;
 	}

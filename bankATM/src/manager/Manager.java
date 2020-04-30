@@ -145,5 +145,9 @@ public class Manager
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public String toString() {
+		return "Manager: " + person;
+	}
 
 }

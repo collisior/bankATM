@@ -26,7 +26,7 @@ public class Bank {
 	}
 
 	public String toString() {
-		return null;
+		return name;
 	}
 
 	public String getName() {

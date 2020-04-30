@@ -11,7 +11,7 @@ public class DBStocks implements CRUDInterface<Stock> {
 	Connection conn = DataBaseConnection.getConnection();
 
 	String tableName = "Stocks";
-	String columns = " (id, name, price, quantity, status, created) ";
+	String columns = " id, name, price, quantity, status, created ";
 
 	/*
 	 * Account(String id, Client client, boolean status, Money balance, Date
@@ -20,18 +20,12 @@ public class DBStocks implements CRUDInterface<Stock> {
 	public static void main(String[] args) throws SQLException {
 		DBStocks testObj = new DBStocks();
 		String id = UUID.randomUUID().toString();
-		Date date = new Date(2001, 12, 1);
-		Person testPerson = new Person(id, "testName", "testLast", date, "000-test-phone", "testCity", "testCountry");
+		id = "89121250-47d9-4ff6-bf59-4589e5c5030a";
+		Date date = new Date(1876, 12, 1);
+		Stock tesStock = new Stock(id, "TestStock", new Money(2222, Currency.USD), 5, date, Status.Open);
 
-		Client testClient = new Client(id, testPerson, date, "testEmail", "testPassword");
-
-		id = UUID.randomUUID().toString();
-		Account testAcc = new CheckingAccount(id, testClient, "stausTest", new Money(120, Currency.USD), date);
-		
-		Stock tesStock = new Stock(id, testAcc.getId(), new Money(2222, Currency.USD), 5, date, null);
-		
 		testObj.create(tesStock);
-		testObj.delete(tesStock);
+//		testObj.delete(tesStock);
 	}
 
 	/*
@@ -40,7 +34,7 @@ public class DBStocks implements CRUDInterface<Stock> {
 
 	@Override
 	public void create(Stock stock) throws SQLException {
-		String sql = "INSERT INTO " + tableName + columns + " VALUES (?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES (?, ?, ?, ?, ?, ?)";
 
 		PreparedStatement statement = conn.prepareStatement(sql);
 
@@ -54,7 +48,7 @@ public class DBStocks implements CRUDInterface<Stock> {
 		int rowsInserted = statement.executeUpdate();
 
 		if (rowsInserted > 0) {
-			System.out.println("A new Stock was created successfully!" );
+			System.out.println("A new Stock was created successfully!");
 		}
 
 	}
@@ -67,33 +61,33 @@ public class DBStocks implements CRUDInterface<Stock> {
 
 	@Override
 	public Stock retrieveById(String id) throws SQLException {
-		DBClient dbClientObj = new DBClient();
 
 		Stock stock = null;
-		PreparedStatement statement = conn.prepareStatement("SELECT " + columns + " FROM " + tableName);
+		PreparedStatement statement = conn
+				.prepareStatement("SELECT " + columns + " FROM " + tableName + " WHERE id = '" + id + "';");
 		ResultSet resultSet = statement.executeQuery();
 
 		while (resultSet.next()) {
 
 			if (resultSet.getString("id").equals(id)) {
 				String name = resultSet.getString("name");
-				Money price = new Money(resultSet.getFloat("price"), Currency.USD);;
+				Money price = new Money(resultSet.getFloat("price"), Currency.USD);
 				int quantity = resultSet.getInt("quantity");
 				Date created = resultSet.getDate("created");
 				Status status = null;
-				if(Status.Open.equals(resultSet.getString("status"))) {
+				if (Status.Open.equals(resultSet.getString("status"))) {
 					status = Status.Open;
 				} else {
 					status = Status.Closed;
 				}
-				
+
 				stock = new Stock(id, name, price, quantity, created, status);
 			}
 		}
 		if (stock == null) {
 			System.out.println("No Stock with id: " + id);
 		} else {
-			System.out.println("Stock fetched successfully! account: " + stock);
+			System.out.println("Stock fetched successfully! Stock: " + stock);
 		}
 		return stock;
 	}

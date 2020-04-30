@@ -18,16 +18,19 @@ public class DBManager implements CRUDInterface<Manager> {
 	 */
 	public static void main(String[] args) throws SQLException {
 		DBManager testObj = new DBManager();
-		String id = UUID.randomUUID().toString();
-		Date date = new Date(2001, 12, 1);
-		Person testPerson = new Person(id, "testName", "testLast", date, "000-test-phone", "testCity", "testCountry");
-
+		DBPerson testObjPers = new DBPerson();
+		String id = null;
+		
+		id = "55878b5b-b306-4023-a4df-62f3fe6fe42b";
+		Person testPerson = testObjPers.retrieveById(id);
+		System.out.println("test P " + testPerson.getCity());
+		
 		id = UUID.randomUUID().toString();
+		id = "d93402af-81ae-42ac-8fbc-7e5b3da170ee";
 		Manager testmanager = new Manager(id, testPerson, "testEmail", "testPassword");
 
-		testObj.create(testmanager);
+//		testObj.create(testmanager);
 		testObj.retrieveById(id);
-		testObj.delete(testmanager);
 	}
 
 	/*
@@ -35,7 +38,7 @@ public class DBManager implements CRUDInterface<Manager> {
 	 */
 	@Override
 	public void create(Manager manager) throws SQLException {
-		String sql = "INSERT INTO " + tableName + columns + " VALUES (?, ?, ?, ?)";
+		String sql = "INSERT INTO " + tableName + " ("+ columns + ") VALUES (?, ?, ?, ?)";
 
 		PreparedStatement statement = conn.prepareStatement(sql);
 
@@ -54,8 +57,10 @@ public class DBManager implements CRUDInterface<Manager> {
 
 	@Override
 	public Manager retrieve(Manager manager) throws SQLException {
-
-		return manager;
+		if (manager != null ) {
+			return retrieveById(manager.getId());
+		}
+		return null;
 	}
 
 	@Override

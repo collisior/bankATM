@@ -17,11 +17,11 @@ public class DBPerson implements CRUDInterface<Person> {
 		String id = UUID.randomUUID().toString();
 		id = "55878b5b-b306-4023-a4df-62f3fe6fe42b";
 		Date date = new Date(2001, 12, 1);
+		
 		Person testPerson = new Person(id, "testName", "testLast", date, "000-test-phone", "testCity", "testCountry");
 		testObj.create(testPerson);
-		testObj.retrieveById(id);
+		
 //		testObj.delete(testPerson);
-//		testObj.deleteById(id);
 	}
 
 	/*
@@ -29,7 +29,7 @@ public class DBPerson implements CRUDInterface<Person> {
 	 */
 	@Override
 	public void create(Person person) throws SQLException {
-		String sql = "INSERT INTO " + tableName + columns + " VALUES (?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO " + tableName +" ("+ columns + ") VALUES (?, ?, ?, ?, ?, ?, ?)";
 
 		PreparedStatement statement = conn.prepareStatement(sql);
 
@@ -50,7 +50,9 @@ public class DBPerson implements CRUDInterface<Person> {
 
 	@Override
 	public Person retrieve(Person person) throws SQLException {
-		// TODO Auto-generated method stub
+		if (person != null ) {
+			return retrieveById(person.getId());
+		}
 		return null;
 	}
 
@@ -73,7 +75,6 @@ public class DBPerson implements CRUDInterface<Person> {
 				person = new Person(id, firstName, lastName, birthDate, phone, city, country);
 			}
 		}
-		
 		if (person == null) {
 			System.out.println("No person with id: " + id);
 		} else {
