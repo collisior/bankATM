@@ -3,14 +3,15 @@ package bankATM;
 import java.sql.Date;
 
 public class Stock {
+	
 	private String id;
 	private String name;
 	private Money price;
 	private int quantity;
-	private String status;
+	private Status status;
 	private Date created;
 	
-	Stock(String id, String name, Money price, int quantity, String status, Date created) {
+	public Stock(String id, String name, Money price, int quantity, Date created, Status status) {
 		setId(id);
 		setName(name);
 		setPrice(price);
@@ -50,11 +51,11 @@ public class Stock {
 		this.quantity = quantity;
 	}
 
-	public String getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Status status) {
 		this.status = status;
 	}
 

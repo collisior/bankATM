@@ -3,26 +3,28 @@ package transaction;
 import java.sql.Date;
 
 import account.Account;
+import account.CheckingAccount;
 import bankATM.*;
 
 public class Transfer extends Transaction implements ServiceFee {
 	
-	private Money serviceFee;
 	private Account destination;
 	
-	public Transfer(String id, Account account, Money amount, Money serviceFee, Date created, String status, Account destination) {
-		super(id, account, amount, serviceFee, created, status);
+	public Transfer(String id, Account account, Money amount, Date created, Status status, Account destination) {
+		super(id, account, amount, created, status);
 		setDestination(destination);
+		setType(Type.Transfer);
 	}
-
 	@Override
 	public Money getServiceFee() {
-		return serviceFee;
+		if (account instanceof CheckingAccount) {
+			return ((CheckingAccount) account).getServiceFee();
+		}
+		return null;
 	}
 
 	@Override
 	public void setServiceFee(Money serviceFee) {
-		this.serviceFee = serviceFee;
 	}
 
 	public Account getDestination() {

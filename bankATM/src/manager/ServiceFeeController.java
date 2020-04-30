@@ -1,4 +1,6 @@
-package bankATM;
+package manager;
+
+import bankATM.Money;
 
 public interface ServiceFeeController {
 

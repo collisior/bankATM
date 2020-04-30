@@ -2,19 +2,18 @@ package account;
 
 import java.sql.Date;
 
-import bankATM.Client;
-import bankATM.Money;
+import bankATM.*;
 
 public abstract class Account {
 	
 	private String id;
 	private Client client;
 	private String status;
-	private String type;
+	private Type type;
 	private Money balance;
 	private Date created;
 
-	public Account(String id, Client client, String status, Money balance, Date created) {
+	protected Account(String id, Client client, String status, Money balance, Date created) {
 		setId(id);
 		setClient(client);
 		setStatus(status);
@@ -64,5 +63,13 @@ public abstract class Account {
 	
 	public String toString() {
 		return "id: " + id + " Balance: " + balance;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
 	}
 }

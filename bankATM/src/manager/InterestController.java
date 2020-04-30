@@ -1,4 +1,4 @@
-package bankATM;
+package manager;
 
 public interface InterestController {
 	

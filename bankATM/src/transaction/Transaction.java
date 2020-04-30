@@ -8,19 +8,19 @@ import account.*;
 public abstract class Transaction implements ServiceFee {
 	
 	private String id;
-	private Account account;
+	protected Account account;
 	private Client client;
-	private Date created;
 	private Money amount;
-	private String status;
+	private Status status;
+	private Type type;
+	private Date created;
 
-	Transaction(String id, Account account, Money amount, Money serviceFee, Date created, String status) {
+	Transaction(String id, Account account, Money amount, Date created, Status status) {
 		setId(id);
 		setCreated(created);
 		setAmount(amount);
 		setAccount(account);
 		setClient(account.getClient());
-		setServiceFee(serviceFee);
 		setStatus(status);
 	}
 
@@ -50,7 +50,7 @@ public abstract class Transaction implements ServiceFee {
 	}
 
 	public String toString() {
-		return "Transaction: " + id + " \nAmount: " + amount + " \nDate: " + created;  
+		return "Transaction: " + getType() + " \nAmount: " + amount + " \nDate: " + created;  
 	}
 
 
@@ -74,13 +74,23 @@ public abstract class Transaction implements ServiceFee {
 	}
 
 
-	public String getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 
 
-	public void setStatus(String status) {
+	public void setStatus(Status status) {
 		this.status = status;
+	}
+
+
+	public Type getType() {
+		return type;
+	}
+
+
+	public void setType(Type type) {
+		this.type = type;
 	}
 	
 }

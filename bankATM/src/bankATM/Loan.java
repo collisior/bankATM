@@ -2,22 +2,25 @@ package bankATM;
 
 import java.util.*;
 
+import account.*;
+
 public class Loan implements Interest {
 	
 	private String id;
-	private Client client;
+	private Account account;
 	private Money amount;
 	private Date requested;
 	private Date approved;
 	private float interest;
-	private String status;
+	private Status status;
 	
-	Loan(String id, Client client, Money amount, Date requested, float interest) {
+	public Loan(String id, Account account, Money amount, Date requested, float interest) {
 		this.setId(id);
-		this.setClient(client);
+		this.setAccount(account);
 		this.setAmount(amount);
 		this.setInterest(interest);
 		this.setRequested(requested);
+		this.setStatus(Status.Requested);
 	}
 	
 	public String getId() {
@@ -28,12 +31,12 @@ public class Loan implements Interest {
 		this.id = id;
 	}
 	
-	public Client getClient() {
-		return client;
+	public Account getAccount() {
+		return account;
 	}
 
-	public void setClient(Client client) {
-		this.client = client;
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 	
 	public Money getAmount() {
@@ -58,20 +61,19 @@ public class Loan implements Interest {
 
 	public void setApproved(Date approved) {
 		this.approved = approved;
+		setStatus(Status.Approved);
 	}
 
-	public String getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Status status) {
 		this.status = status;
 	}
 
-
 	@Override
 	public float getInterest() {
-		// TODO Auto-generated method stub
 		return interest;
 	}
 

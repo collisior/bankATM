@@ -7,20 +7,21 @@ import bankATM.*;
 
 public class Withdraw extends Transaction implements ServiceFee {
 
-	private Money serviceFee;
-
-	public Withdraw(String id, Account account, Money amount, Money serviceFee, Date created, String status) {
-		super(id, account, amount, serviceFee, created, status);
+	public Withdraw(String id, Account account, Money amount, Date created, Status status) {
+		super(id, account, amount, created, status);
+		setType(Type.Withdraw);
 	}
 
 	@Override
 	public Money getServiceFee() {
+		Money serviceFee  = new Money ((float) 1, Currency.USD);
+		if (account instanceof CheckingAccount) {
+			return serviceFee.add(((CheckingAccount) account).getServiceFee());
+		}
 		return serviceFee;
 	}
 
 	@Override
 	public void setServiceFee(Money serviceFee) {
-		this.serviceFee = serviceFee;
-
 	}
 }

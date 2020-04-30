@@ -11,6 +11,7 @@ public class DBAccount implements CRUDInterface<Account> {
 	Connection conn = DataBaseConnection.getConnection();
 
 	String tableName = "Accounts";
+	String columns = " (id, client_id, status, type, balance, created) ";
 
 	/*
 	 * Account(String id, Client client, boolean status, Money balance, Date
@@ -34,20 +35,19 @@ public class DBAccount implements CRUDInterface<Account> {
 	/*
 	 * Insert Account into database table Accounts.
 	 */
-
 	@Override
 	public void create(Account account) throws SQLException {
-		String sql = "INSERT INTO " + tableName + " (id, client_id, status, type, balance, created) VALUES (?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO " + tableName + " " + columns + " VALUES (?, ?, ?, ?, ?, ?)";
 
 		PreparedStatement statement = conn.prepareStatement(sql);
 
 		statement.setString(1, account.getId());
 		statement.setString(2, account.getClient().getId());
 		statement.setString(3, account.getStatus());
-		statement.setString(4, account.getClass().getName());
+		statement.setString(4, account.getType().str);
 		statement.setFloat(5, account.getBalance().getValue());
-		statement.setDate(4, account.getCreated());
-		
+		statement.setDate(6, account.getCreated());
+
 		int rowsInserted = statement.executeUpdate();
 
 		if (rowsInserted > 0) {
@@ -67,8 +67,7 @@ public class DBAccount implements CRUDInterface<Account> {
 		DBClient dbClientObj = new DBClient();
 
 		Account account = null;
-		PreparedStatement statement = conn
-				.prepareStatement("SELECT id, client_id, status, type, balance, created from " + tableName);
+		PreparedStatement statement = conn.prepareStatement("SELECT " + columns + " FROM " + tableName);
 		ResultSet resultSet = statement.executeQuery();
 
 		while (resultSet.next()) {
@@ -79,11 +78,17 @@ public class DBAccount implements CRUDInterface<Account> {
 				String type = resultSet.getString("type");
 				Money balance = new Money(resultSet.getFloat("balance"), Currency.USD);
 				Date created = resultSet.getDate("created");
-				
-				if(type.equals("account.CheckingAccount")) {
+
+				if (type.equals("Checking Account")) {
 					account = new CheckingAccount(id, client, status, balance, created);
-				} else if (type.equals("account.SavingsAccount")) {
+				} else if (type.equals("Savings Account")) {
 					account = new SavingsAccount(id, client, status, balance, created);
+				} else if (type.equals("Loans Account")) {
+					account = new LoansAccount(id, client, status, balance, created);
+				} else if (type.equals("Security Account")) {
+					account = new SecurityAccount(id, client, status, balance, created);
+				} else if (type.equals("Deposit Account")) {
+					account = new DepositAccount(id, client, status, balance, created);
 				}
 			}
 		}
@@ -107,7 +112,7 @@ public class DBAccount implements CRUDInterface<Account> {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void deleteById(String id) throws SQLException {
 		String sql = "DELETE FROM " + tableName + " WHERE id = '" + id + "';";
@@ -130,6 +135,6 @@ public class DBAccount implements CRUDInterface<Account> {
 	@Override
 	public void updateById(String id) throws SQLException {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

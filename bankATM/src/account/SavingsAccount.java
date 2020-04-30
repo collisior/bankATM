@@ -5,6 +5,7 @@ import java.sql.Date;
 import bankATM.Client;
 import bankATM.Interest;
 import bankATM.Money;
+import bankATM.Type;
 
 public class SavingsAccount extends Account implements Interest {
 
@@ -12,6 +13,7 @@ public class SavingsAccount extends Account implements Interest {
 
 	public SavingsAccount(String id, Client client, String status, Money balance, Date created) {
 		super(id, client, status, balance, created);
+		setType(Type.SavingsAccount);
 	}
 
 	@Override

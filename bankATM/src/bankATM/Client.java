@@ -57,5 +57,9 @@ public class Client {
 	public String getPassword() {
 		return password;
 	}
+	
+	public String toString() {
+		return person + ", email: " + email;
+	}
 
 }

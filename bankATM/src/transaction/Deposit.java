@@ -6,20 +6,21 @@ import account.*;
 import bankATM.*;
 
 public class Deposit extends Transaction {
-	
-	private Money serviceFee;
-	
-	public Deposit(String id, Account account, Money amount, Money serviceFee, Date created, String status) {
-		super(id, account, amount, serviceFee, created, status);
+		
+	public Deposit(String id, Account account, Money amount, Date created, Status status) {
+		super(id, account, amount, created, status);
+		setType(Type.Deposit);
 	}
 
 	@Override
 	public Money getServiceFee() {
-		return serviceFee;
+		if (account instanceof CheckingAccount) {
+			return ((CheckingAccount) account).getServiceFee();
+		}
+		return null;
 	}
 
 	@Override
 	public void setServiceFee(Money serviceFee) {
-		this.serviceFee = serviceFee;
 	}
 }

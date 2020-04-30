@@ -13,6 +13,7 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 	Connection conn = DataBaseConnection.getConnection();
 
 	String tableName = "Transactions";
+	String columns = "(id, account_id, client_id, amount, created, status, type, destination_account_id) ";
 
 	public static void main(String[] args) throws SQLException {
 		DBTransaction testObj = new DBTransaction();
@@ -24,8 +25,8 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 		id = UUID.randomUUID().toString();
 		Account testAcc = new CheckingAccount(id, testClient, "stausTest", new Money(120, Currency.USD), date);
 		id = UUID.randomUUID().toString();
-		Transaction testTransaction = new Withdraw(id, testAcc, new Money(121, Currency.USD),
-				new Money(121, Currency.USD), date, "testStatus");
+
+		Transaction testTransaction = new Withdraw(id, testAcc, new Money(121, Currency.USD), date, Status.Pending);
 
 		testObj.create(testTransaction);
 		testObj.delete(testTransaction);
@@ -36,8 +37,7 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 	 */
 	@Override
 	public void create(Transaction transaction) throws SQLException {
-		String sql = "INSERT INTO " + tableName
-				+ " (id, account_id, client_id, amount, service_fee, destination_account_id, created, status, type) VALUES (?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO " + tableName + columns + " VALUES (?, ?, ?, ?, ?, ?, ?)";
 
 		PreparedStatement statement = conn.prepareStatement(sql);
 
@@ -45,11 +45,14 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 		statement.setString(2, transaction.getAccount().getId());
 		statement.setString(3, transaction.getAccount().getClient().getId());
 		statement.setFloat(4, transaction.getAmount().getValue());
+		statement.setDate(5, transaction.getCreated());
+		statement.setString(6, transaction.getStatus().str);
+
+		statement.setString(7, transaction.getType().str);
+
 		if (transaction instanceof Transfer) {
-			statement.setString(5, ((Transfer) transaction).getDestination().getId());
+			statement.setString(8, ((Transfer) transaction).getDestination().getId());
 		}
-		statement.setDate(6, transaction.getCreated());
-		statement.setString(7, transaction.getStatus());
 
 		int rowsInserted = statement.executeUpdate();
 
@@ -57,10 +60,6 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 			System.out.println("A new Transaction was created successfully!");
 		}
 	}
-
-	// Withdraw(String id, Account account, Money amount, Money serviceFee, Date
-	// created, String status)
-	// super(id, account, amount, serviceFee, created, status);
 
 	@Override
 	public Transaction retrieve(Transaction transaction) throws SQLException {
@@ -72,9 +71,7 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 	public Transaction retrieveById(String id) throws SQLException {
 		DBAccount dbAccObj = new DBAccount();
 		Transaction transaction = null;
-		PreparedStatement statement = conn.prepareStatement(
-				"SELECT id, account_id, client_id, amount, service_fee, destination_account_id, created, status, type FROM "
-						+ tableName);
+		PreparedStatement statement = conn.prepareStatement("SELECT " + columns + " FROM " + tableName);
 		ResultSet resultSet = statement.executeQuery();
 
 		while (resultSet.next()) {
@@ -82,25 +79,36 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 			if (resultSet.getString("id").equals(id)) {
 				Account account = dbAccObj.retrieveById(resultSet.getString("account_id"));
 				Money amount = new Money(resultSet.getFloat("amount"), Currency.USD);
-				Money serviceFee = new Money(resultSet.getFloat("amount"), Currency.USD);
-				Account destination = dbAccObj.retrieveById(resultSet.getString("destination_account_id"));
 				Date created = resultSet.getDate("created");
-				String status = resultSet.getString("status");
+				String statusStr = resultSet.getString("status");
 				String type = resultSet.getString("type");
 				
-				if (type.equals("withdraw")) {
-					transaction = new Withdraw(id, account, amount, serviceFee, created, status);
-				} else if (type.equals("transfer")) {
-					transaction = new Transfer(id, account, amount, serviceFee, created, status, destination);
-				} else if (type.equals("deposit")) {
-					transaction = new Deposit(id, account, amount, serviceFee, created, status);
+				Status status = null;
+				
+				if (Status.Completed.equals(statusStr)) {
+					status = Status.Completed;
+				} else if (Status.Pending.equals(statusStr)) {
+					status = Status.Pending;
+				}
+
+				if (Type.Withdraw.equals(type)) {
+					transaction = new Withdraw(id, account, amount, created, status);
+				} else if (Type.Transfer.equals(type)) {
+					Account destination = dbAccObj.retrieveById(resultSet.getString("destination_account_id"));
+					transaction = new Transfer(id, account, amount, created, status, destination);
+				} else if (Type.Deposit.equals(type)) {
+					transaction = new Deposit(id, account, amount, created, status);
+				} else if (Type.LoanPayment.equals(type)) {
+					transaction = new LoanPayment(id, account, amount, created, status);
+				} else if (Type.StockOperation.equals(type)) {
+					transaction = new StockOperation(id, account, amount, created, status);
 				}
 			}
 		}
 		if (transaction == null) {
 			System.out.println("No transaction with id: " + id);
 		} else {
-			System.out.println("A transaction fetched successfully! Person: " + transaction);
+			System.out.println("A transaction fetched successfully! Transaction: " + transaction);
 		}
 		return transaction;
 	}

@@ -1,4 +1,7 @@
-package bankATM;
+package manager;
+
+import bankATM.Money;
+import bankATM.Stock;
 
 public interface StockController {
 	

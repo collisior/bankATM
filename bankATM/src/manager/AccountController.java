@@ -1,6 +1,7 @@
-package bankATM;
+package manager;
 
 import account.Account;
+import bankATM.Client;
 
 public interface AccountController {
 	

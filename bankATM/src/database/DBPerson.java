@@ -10,22 +10,26 @@ public class DBPerson implements CRUDInterface<Person> {
 	Connection conn = DataBaseConnection.getConnection();
 
 	String tableName = "Person";
+	String columns = " id, first_name, last_name, birth_date, phone, city, country ";
 
 	public static void main(String[] args) throws SQLException {
 		DBPerson testObj = new DBPerson();
 		String id = UUID.randomUUID().toString();
+		id = "55878b5b-b306-4023-a4df-62f3fe6fe42b";
 		Date date = new Date(2001, 12, 1);
 		Person testPerson = new Person(id, "testName", "testLast", date, "000-test-phone", "testCity", "testCountry");
 		testObj.create(testPerson);
-		testObj.delete(testPerson);
+		testObj.retrieveById(id);
+//		testObj.delete(testPerson);
+//		testObj.deleteById(id);
 	}
+
 	/*
 	 * Insert Person into database table Person.
 	 */
 	@Override
 	public void create(Person person) throws SQLException {
-		String sql = "INSERT INTO " + tableName
-				+ " (id, first_name, last_name, birth_date, phone, city, country) VALUES (?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO " + tableName + columns + " VALUES (?, ?, ?, ?, ?, ?, ?)";
 
 		PreparedStatement statement = conn.prepareStatement(sql);
 
@@ -53,12 +57,11 @@ public class DBPerson implements CRUDInterface<Person> {
 	@Override
 	public Person retrieveById(String id) throws SQLException {
 		Person person = null;
-		PreparedStatement statement = conn.prepareStatement(
-				"SELECT id, first_name, last_name, birth_date, phone, city, country FROM " + tableName);
+		PreparedStatement statement = conn
+				.prepareStatement("SELECT " + columns + " FROM " + tableName + " WHERE id = '" + id + "';");
 		ResultSet resultSet = statement.executeQuery();
 
 		while (resultSet.next()) {
-
 			if (resultSet.getString("id").equals(id)) {
 				String firstName = resultSet.getString("first_name");
 				String lastName = resultSet.getString("last_name");
@@ -70,6 +73,7 @@ public class DBPerson implements CRUDInterface<Person> {
 				person = new Person(id, firstName, lastName, birthDate, phone, city, country);
 			}
 		}
+		
 		if (person == null) {
 			System.out.println("No person with id: " + id);
 		} else {
