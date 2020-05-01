@@ -4,16 +4,16 @@ import java.sql.Date;
 
 import bankATM.*;
 
-public abstract class Account {
+public abstract class Account implements OpenClose {
 	
 	private String id;
 	private Client client;
-	private String status;
+	private Status status;
 	private Type type;
 	private Money balance;
 	private Date created;
 
-	protected Account(String id, Client client, String status, Money balance, Date created) {
+	protected Account(String id, Client client, Status status, Money balance, Date created) {
 		setId(id);
 		setClient(client);
 		setStatus(status);
@@ -37,11 +37,11 @@ public abstract class Account {
 		this.client = client;
 	}
 
-	public String getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Status status) {
 		this.status = status;
 	}
 

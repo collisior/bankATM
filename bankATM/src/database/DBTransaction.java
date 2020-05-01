@@ -30,7 +30,17 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 		DBTransaction testObj = new DBTransaction();
 		Transaction testTransaction = new Withdraw(id, testAcc, new Money(121, Currency.USD), date, Status.Pending);
 
+		
+		//testObj.create(testTransaction);
+		
+		id = UUID.randomUUID().toString();
+		Transaction testTransaction2 = new Transfer(id, testAcc, new Money(-12121, Currency.USD), date, Status.Pending, testAcc);
+
+		testObj.create(testTransaction2);
 		testObj.retrieveById(id);
+		
+		
+		
 	}
 
 	/*
