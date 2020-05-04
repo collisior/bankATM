@@ -1,13 +1,12 @@
 package manager;
 
+import java.sql.SQLException;
+import java.sql.Date;
 import java.util.*;
 
-import account.Account;
-import bankATM.Client;
-import bankATM.Loan;
-import bankATM.Money;
-import bankATM.Person;
-import bankATM.Stock;
+import account.*;
+import bankATM.*;
+import database.*;
 
 public class Manager
 		implements AccountController, LoanController, StockController, ServiceFeeController, InterestController {
@@ -16,12 +15,14 @@ public class Manager
 	private Person person;
 	private String email;
 	private String password;
+	private Bank bank;
 
-	public Manager(String id, Person person, String email, String password) {
+	public Manager(String id, Person person, String email, String password) throws SQLException {
 		this.setId(id);
 		this.setPerson(person);
 		this.setEmail(email);
 		this.setPassword(password);
+		setBank();
 	}
 
 	public String getId() {
@@ -57,45 +58,57 @@ public class Manager
 	}
 
 	@Override
-	public boolean setWithdrawServiceFee(Money fee) {
-		// TODO Auto-generated method stub
-		return false;
+	public void setWithdrawServiceFee(Money fee) {
+		bank.setWithdrawFee(fee);
+
 	}
 
 	@Override
-	public boolean setTranserServiceFee(Money fee) {
-		// TODO Auto-generated method stub
-		return false;
+	public void setTranserServiceFee(Money fee) {
+		bank.setTransferFee(fee);
+		;
 	}
 
 	@Override
-	public boolean setDepositServiceFee(Money fee) {
-		// TODO Auto-generated method stub
-		return false;
+	public void setDepositServiceFee(Money fee) {
+		bank.setDepositFee(fee);
+	}
+
+	@Override
+	public void setCloseAccountFee(Money fee) {
+		bank.setCloseAccountFee(fee);
+	}
+
+	@Override
+	public void setOpenAccountFee(Money fee) {
+		bank.setOpenAccountFee(fee);
 	}
 
 	@Override
 	public void addStock(Stock stock) {
-		// TODO Auto-generated method stub
-
+		if(!stock.getName().isEmpty() && stock.getQuantity() > 0) {
+			stock.addToDB();
+		} else {
+			System.out.println("Invalid Stock created.");
+		}
 	}
 
 	@Override
-	public void setStatus(Stock stock) {
-		// TODO Auto-generated method stub
-
+	public void setStatus(Stock stock, Status status) {
+		stock.setStatus(Status.Closed);
+		stock.updateDB();
 	}
 
 	@Override
 	public void setPrice(Stock stock, Money price) {
-		// TODO Auto-generated method stub
-
+		stock.setPrice(price);
+		stock.updateDB();
 	}
 
 	@Override
 	public void setQuantity(Stock stock, int quantity) {
-		// TODO Auto-generated method stub
-
+		stock.setQuantity(quantity);
+		stock.updateDB();
 	}
 
 	@Override
@@ -136,7 +149,7 @@ public class Manager
 
 	@Override
 	public boolean approveLoan(Account account) {
-		
+
 		return false;
 	}
 
@@ -145,9 +158,23 @@ public class Manager
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public String toString() {
 		return "Manager: " + person;
 	}
 
+	public void setBank() throws SQLException {
+		DBBank bankObj = new DBBank();
+		this.bank = bankObj.retrieveById("testBank");
+	}
+
+	public void updateBank(){
+		DBBank bankObj = new DBBank();
+		try {
+			bankObj.update(bank);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

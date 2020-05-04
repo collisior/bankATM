@@ -5,6 +5,7 @@ public enum Status {
 	//Transaction Status
 	Pending("Pending"), 
 	Completed("Completed"),
+	Cancelled("Cancelled"),
 	//Loan Request/Approve Status
 	Requested("Requested"),
 	Approved("Approved"),

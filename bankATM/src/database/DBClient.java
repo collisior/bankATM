@@ -27,9 +27,9 @@ public class DBClient implements CRUDInterface<Client> {
 		DBClient testObj = new DBClient();
 		id = UUID.randomUUID().toString();
 		id = "c7577a78-ec82-4e04-85c6-468f029617e6";
-		
+
 		Client testClient = new Client(id, testPerson, date, "testEmail", "testPassword");
-		
+
 		testObj.retrieveById(id);
 //		testObj.create(testClient);
 //		testObj.delete(testClient);
@@ -61,7 +61,33 @@ public class DBClient implements CRUDInterface<Client> {
 
 	@Override
 	public Client retrieve(Client client) throws SQLException {
+		return retrieveById(client.getId());
+	}
 
+	public Client retrieveByEmail(String email) throws SQLException {
+		DBPerson dbPersonObj = new DBPerson();
+
+		Client client = null;
+		PreparedStatement statement = conn
+				.prepareStatement("SELECT " + columns + " FROM " + tableName + " WHERE email = '" + email + "';");
+		ResultSet resultSet = statement.executeQuery();
+
+		while (resultSet.next()) {
+
+			if (resultSet.getString("email").equals(email)) {
+				Person person = dbPersonObj.retrieveById(resultSet.getString("person_id"));
+				Date created = resultSet.getDate("created");
+				String id = resultSet.getString("id");
+				String password = resultSet.getString("password");
+
+				client = new Client(id, person, created, email, password);
+			}
+		}
+		if (client == null) {
+			System.out.println("No client with email: " + email);
+		} else {
+			System.out.println("A client fetched successfully! Client: " + client);
+		}
 		return client;
 	}
 

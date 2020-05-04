@@ -1,6 +1,7 @@
 package database;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import account.Account;
@@ -126,6 +127,51 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 			System.out.println("A transaction fetched successfully! Transaction: " + transaction);
 		}
 		return transaction;
+	}
+	
+	/*
+	 * Returns this Client's All transactions from DB
+	 */
+	public ArrayList<Transaction> retrieveTransactions(Client client) throws SQLException {
+		ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+		String client_id = client.getId();
+		if (client != null) {
+
+			Transaction transaction = null;
+			PreparedStatement statement = conn.prepareStatement(
+					"SELECT " + columns + " FROM " + tableName + " WHERE client_id = '" + client_id + "';");
+			ResultSet resultSet = statement.executeQuery();
+
+			while (resultSet.next()) {
+				String id = resultSet.getString("id");
+				transaction = retrieveById(id);
+				transactions.add(transaction);
+			}
+
+		}
+		return transactions;
+	}
+	/*
+	 * Returns this Account's All transactions from DB
+	 */
+	public ArrayList<Transaction> retrieveTransactions(Account account) throws SQLException {
+		ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+		String account_id = account.getId();
+		if (account != null) {
+
+			Transaction transaction = null;
+			PreparedStatement statement = conn.prepareStatement(
+					"SELECT " + columns + " FROM " + tableName + " WHERE account_id = '" + account_id + "';");
+			ResultSet resultSet = statement.executeQuery();
+
+			while (resultSet.next()) {
+				String id = resultSet.getString("id");
+				transaction = retrieveById(id);
+				transactions.add(transaction);
+			}
+
+		}
+		return transactions;
 	}
 
 	@Override

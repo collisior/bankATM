@@ -41,6 +41,7 @@ public class DataBaseConnection {
 		}
 		return connection;
 	}
+	 
 
 	public static void main(String[] args) throws SQLException {
 		// Testing connection

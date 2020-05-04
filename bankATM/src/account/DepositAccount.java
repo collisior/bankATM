@@ -5,12 +5,19 @@ import java.sql.SQLException;
 
 import bankATM.*;
 import database.DBAccount;
+import transaction.Transfer;
 
 public class DepositAccount extends Account {
 
 	public DepositAccount(String id, Client client, Status status, Money balance, Date created) {
 		super(id, client, status, balance, created);
 		setType(Type.DepositAccount);
+	}
+	
+	public DepositAccount(Client client) {
+		super(client);
+		setType(Type.DepositAccount);
+		updateDB();
 	}
 
 	@Override
@@ -24,10 +31,7 @@ public class DepositAccount extends Account {
 	 */
 	@Override
 	public void close(Client client) throws SQLException {
-		DBAccount dbObj = new DBAccount();
-		dbObj.delete(this);
+		System.out.println("Can't close Deposit Account");
 	}
-	
-	
 	
 }

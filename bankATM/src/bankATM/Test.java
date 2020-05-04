@@ -21,13 +21,20 @@ public class Test {
 
 	public Bank createBank() {
 		Money checkingAccountFee = new Money(2222, Currency.USD);
-		Money withdrawFee = new Money(2222, Currency.USD);
+		Money withdrawFee = new Money(3, Currency.USD), depositFee = new Money(4, Currency.USD);; 
+		Money closeAccount = new Money(2, Currency.USD), openAccount = new Money(2, Currency.USD);;
+		new Money(2222, Currency.USD);
 		float savingsInterest = (float) 0.1;
 		float loansInterest = (float) 0.05;
-		Money balance = new Money(2222, Currency.USD);
+		Money balance = new Money(222239322, Currency.USD);
 		Date currentDate = getDate();
-		return new Bank("BANK ATM", checkingAccountFee, withdrawFee, savingsInterest, loansInterest, balance,
-				currentDate);
+		
+		Bank bank = new Bank( "testBank", checkingAccountFee, withdrawFee, savingsInterest, loansInterest,
+				closeAccount, openAccount, depositFee, balance, currentDate);
+		return null;
+//		return new Bank("BANKATM", checkingAccountFee, withdrawFee, savingsInterest, loansInterest, closeFee, openFee,depositFee  balance,
+//				 currentDate);
+		
 	}
 
 	public void generateTestObjects() {
@@ -44,15 +51,12 @@ public class Test {
 
 		String id = UUID.randomUUID().toString();
 
-		Bank testBank = new Bank("testBank", new Money(2222, Currency.USD), new Money(2222, Currency.USD), (float) 1,
-				(float) 2, new Money(2222, Currency.USD), getDate());
-
 		Bank bank = createBank();
 		Person personManager = new Person(getId(), "Camilla", "Satte", new Date(1998, 7, 1), "1234456789", "Boston",
 				"US");
 		Person personClient = new Person(getId(), "ManagerName", "ManagerLastName", new Date(1998, 7, 1), "1234456789",
 				"Boston", "US");
-		
+
 //		Account account = new Deposit(  );
 	}
 

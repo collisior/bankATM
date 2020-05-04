@@ -1,7 +1,11 @@
 package bankATM;
 
 import java.sql.Date;
+import java.sql.SQLException;
+import java.util.UUID;
+
 import account.*;
+import database.*;
 
 public class SoldStock {
 
@@ -28,8 +32,37 @@ public class SoldStock {
 		setCreated(created);
 	}
 
+	public SoldStock(Stock stock, Account account, Money purchasedPrice, int quantity) {
+		this(getNewId(), stock, account, purchasedPrice, stock.getPrice(), quantity, getNewCreated());
+		addToDB();
+	}
+
+	public void addToDB() {
+		DBSoldStocks dbObj = new DBSoldStocks();
+		try {
+			dbObj.create(this);
+		} catch (SQLException e) {
+			System.out.println("Couldn't add this Sold Stock to DB.");
+			e.printStackTrace();
+		}
+	}
+
+	public void updateDB() {
+		DBSoldStocks dbObj = new DBSoldStocks();
+		try {
+			dbObj.update(this);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public String getId() {
 		return id;
+	}
+
+	private static String getNewId() {
+		return UUID.randomUUID().toString();
 	}
 
 	private void setId(String id) {
@@ -91,6 +124,10 @@ public class SoldStock {
 		return created;
 	}
 
+	private static Date getNewCreated() {
+		return new Date(System.currentTimeMillis());
+	}
+
 	public void setCreated(Date created) {
 		this.created = created;
 	}
@@ -102,9 +139,9 @@ public class SoldStock {
 	public void setAccount(Account account) {
 		this.account = account;
 	}
-	
+
 	public String toString() {
-		return "Sold Stock: "+ stock.getName() + ", price : " + getSoldPrice();
+		return "Sold Stock: " + stock.getName() + ", price : " + getSoldPrice();
 	}
 
 }

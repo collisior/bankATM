@@ -13,6 +13,12 @@ public class CheckingAccount extends Account implements ServiceFee {
 		super(id, client, status, balance, created);
 		setType(Type.CheckingAccount);
 	}
+	
+	public CheckingAccount(Client client) {
+		super(client);
+		setType(Type.CheckingAccount);
+		updateDB();
+	}
 
 	@Override
 	public Money getServiceFee() {

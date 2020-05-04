@@ -1,6 +1,7 @@
 package database;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import account.*;
@@ -21,11 +22,10 @@ public class DBPurchasedStocks implements CRUDInterface<PurchasedStock> {
 		DBAccount testObjAcc = new DBAccount();
 		id = "6bf61a1e-0697-4b08-a0ff-86d6cb3d70b9";
 		Account testAcc = testObjAcc.retrieveById(id);
-		
-		
+
 		id = "c3d8e51e-bd16-47a2-a2db-30da8b42e6cb";
 		Stock stock = new Stock(id, testAcc.getId(), new Money(2222, Currency.USD), 5, date, null);
-		
+
 		PurchasedStock testStock = new PurchasedStock(id, stock, testAcc, new Money(2222, Currency.USD), 2, date);
 		testObj.create(testStock);
 		testObj.delete(testStock);
@@ -58,7 +58,7 @@ public class DBPurchasedStocks implements CRUDInterface<PurchasedStock> {
 
 	@Override
 	public PurchasedStock retrieve(PurchasedStock stock) throws SQLException {
-		if (stock != null ) {
+		if (stock != null) {
 			return retrieveById(stock.getId());
 		}
 		return null;
@@ -97,6 +97,25 @@ public class DBPurchasedStocks implements CRUDInterface<PurchasedStock> {
 		return stock;
 	}
 
+	public ArrayList<PurchasedStock> retrieveAccountStocks(Account account) throws SQLException {
+		ArrayList<PurchasedStock> stocks = new ArrayList<PurchasedStock>();
+		String account_id = account.getId();
+		if (account != null) {
+
+			PurchasedStock stock = null;
+			PreparedStatement statement = conn.prepareStatement(
+					"SELECT " + columns + " FROM " + tableName + " WHERE account_id = '" + account_id + "';");
+			ResultSet resultSet = statement.executeQuery();
+
+			while (resultSet.next()) {
+				String id = resultSet.getString("id");
+				stock = retrieveById(id);
+				stocks.add(stock);
+			}
+		}
+		return stocks;
+	}
+
 	@Override
 	public void delete(PurchasedStock stock) throws SQLException {
 		String sql = "DELETE FROM " + tableName + " WHERE id = '" + stock.getId() + "'";
@@ -125,8 +144,8 @@ public class DBPurchasedStocks implements CRUDInterface<PurchasedStock> {
 
 	@Override
 	public void update(PurchasedStock stock) throws SQLException {
-		// TODO Auto-generated method stub
-
+		delete(stock);
+		create(stock);
 	}
 
 	@Override

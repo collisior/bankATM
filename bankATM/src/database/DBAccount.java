@@ -114,7 +114,7 @@ public class DBAccount implements CRUDInterface<Account> {
 		ResultSet resultSet = statement.executeQuery();
 
 		while (resultSet.next()) {
-
+			
 			if (resultSet.getString("id").equals(id)) {
 				Client client = dbClientObj.retrieveById(resultSet.getString("client_id"));
 

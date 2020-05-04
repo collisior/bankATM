@@ -14,11 +14,12 @@ public enum Type {
 	SoldStock("Sold Stock"), 
 	
 	//Account type
-	SavingsAccount("Savings Account"), 
-	LoansAccount("Loans Account"),
-	CheckingAccount("Checking Account"),
 	DepositAccount("Deposit Account"), 
-	SecurityAccount("Security Account");
+	CheckingAccount("Checking Account"),
+	SavingsAccount("Savings Account"), 
+	SecurityAccount("Security Account"),
+	LoansAccount("Loans Account");
+	
 
 	public String str;
 

@@ -29,7 +29,7 @@ public class LoanPayment extends Transaction {
 	@Override
 	public Money getServiceFee() {
 		// TODO Auto-generated method stub
-		return null;
+		return new Money(0, Currency.USD);
 	}
 
 	@Override
