@@ -111,13 +111,12 @@ public class DBPerson implements CRUDInterface<Person> {
 
 	@Override
 	public void update(Person person) throws SQLException {
-		// TODO Auto-generated method stub
-
+		delete(person);
+		create(person);
 	}
 
 	@Override
 	public void updateById(String id) throws SQLException {
-		// TODO Auto-generated method stub
-
+		update(retrieveById(id));
 	}
 }

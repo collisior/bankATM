@@ -17,22 +17,24 @@ public class Loan implements Interest {
 	private Money amount;
 	private Date requested;
 	private Date approved;
+	private Date lastPay;
 	private float interest;
 	private Status status;
 
 	// Constructor for loan
-	public Loan(String id, Account account, Money amount, Date requested, float interest) {
+	public Loan(String id, Account account, Money amount, Date requested, Date lastPay, float interest) {
 		this.setId(id);
 		this.setAccount(account);
 		this.setAmount(amount);
 		this.setInterest(interest);
 		this.setRequested(requested);
+		this.setLastPay(lastPay);
 		this.setStatus(Status.Requested);
 	}
 
 	// Constructing and Creating new Loan (Adding to DBs)
 	public Loan(Account account, Money amount, Date requested, float interest) {
-		this(getNewId(), account, amount, getNewDate(), interest);
+		this(getNewId(), account, amount, getNewDate(), getNewDate(), interest);
 		if (amount.getValue() < -1000) { // Approve loans without request if amount < 1000
 			this.setStatus(Status.Approved);
 			this.setApproved(requested);
@@ -129,6 +131,14 @@ public class Loan implements Interest {
 	public void updateDB() throws SQLException {
 		DBLoans dbObj = new DBLoans();
 		dbObj.update(this);
+	}
+
+	public Date getLastPay() {
+		return lastPay;
+	}
+
+	public void setLastPay(Date lastPay) {
+		this.lastPay = lastPay;
 	}
 
 }

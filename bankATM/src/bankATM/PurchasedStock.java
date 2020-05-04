@@ -25,7 +25,6 @@ public class PurchasedStock {
 		setQuantity(quantity);
 		setType(Type.PurchasedStock);
 		setCreated(created);
-		addToDB();
 	}
 
 	public PurchasedStock(Stock stock, Account account, int quantity) {
@@ -52,7 +51,7 @@ public class PurchasedStock {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void updateDB() {
 		DBPurchasedStocks dbObj = new DBPurchasedStocks();
 		try {
@@ -127,19 +126,23 @@ public class PurchasedStock {
 		this.account = account;
 	}
 
+	/*
+	 * Sell this stock. Sells indicated quanitity of this Stock. Deletes this stock
+	 * if quantity reaches 0.
+	 */
 	public boolean sell(int quantity) throws SQLException {
 		if (quantity > this.quantity || quantity <= 0) {
 			return false; // invalid quantity of stocks!
 		}
-		SoldStock soldStock = new SoldStock(id, stock, account, purchasedPrice, this.getStock().getPrice(), quantity,
-				getNewCreated());
+		SoldStock soldStock = new SoldStock(stock, account, purchasedPrice, quantity);
+
 		this.setQuantity(this.getQuantity() - quantity);
 
 		Money totalSoldPrice = new Money(this.getStock().getPrice().getValue() * quantity, Currency.USD);
 		account.deposit(totalSoldPrice);
 		updateDB();
-		
-		if(this.getQuantity() == 0) {
+
+		if (this.getQuantity() == 0) {
 			deleteDB();
 		}
 		return true;

@@ -17,31 +17,28 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 	String columns = " id, account_id, client_id, amount, created, status, type, destination_account_id ";
 
 	public static void main(String[] args) throws SQLException {
-		
+
 		String id = UUID.randomUUID().toString();
 		Date date = new Date(2001, 12, 1);
-		
+
 		DBAccount testObjAcc = new DBAccount();
 		id = "6bf61a1e-0697-4b08-a0ff-86d6cb3d70b9";
 		Account testAcc = testObjAcc.retrieveById(id);
-		
-		
+
 		id = UUID.randomUUID().toString();
 		id = "df215b5d-066b-462b-91e4-462ee2395980";
 		DBTransaction testObj = new DBTransaction();
 		Transaction testTransaction = new Withdraw(id, testAcc, new Money(121, Currency.USD), date, Status.Pending);
 
-		
-		//testObj.create(testTransaction);
-		
+		// testObj.create(testTransaction);
+
 		id = UUID.randomUUID().toString();
-		Transaction testTransaction2 = new Transfer(id, testAcc, new Money(-12121, Currency.USD), date, Status.Pending, testAcc);
+		Transaction testTransaction2 = new Transfer(id, testAcc, new Money(-12121, Currency.USD), date, Status.Pending,
+				testAcc);
 
 		testObj.create(testTransaction2);
 		testObj.retrieveById(id);
-		
-		
-		
+
 	}
 
 	/*
@@ -76,7 +73,7 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 
 	@Override
 	public Transaction retrieve(Transaction transaction) throws SQLException {
-		if (transaction != null ) {
+		if (transaction != null) {
 			return retrieveById(transaction.getId());
 		}
 		return null;
@@ -116,9 +113,7 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 					transaction = new Deposit(id, account, amount, created, status);
 				} else if (Type.LoanPayment.equals(type)) {
 					transaction = new LoanPayment(id, account, amount, created, status);
-				} else if (Type.StockOperation.equals(type)) {
-					transaction = new StockOperation(id, account, amount, created, status);
-				}
+				} 
 			}
 		}
 		if (transaction == null) {
@@ -128,7 +123,7 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 		}
 		return transaction;
 	}
-	
+
 	/*
 	 * Returns this Client's All transactions from DB
 	 */
@@ -151,6 +146,7 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 		}
 		return transactions;
 	}
+
 	/*
 	 * Returns this Account's All transactions from DB
 	 */
@@ -202,13 +198,13 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 
 	@Override
 	public void update(Transaction transaction) throws SQLException {
-		// TODO Auto-generated method stub
-
+		delete(transaction);
+		create(transaction);
 	}
 
 	@Override
 	public void updateById(String id) throws SQLException {
-		// TODO Auto-generated method stub
+		update(retrieveById(id));
 
 	}
 }

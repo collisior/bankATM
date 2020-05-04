@@ -12,7 +12,7 @@ public class DBLoans implements CRUDInterface<Loan> {
 	Connection conn = DataBaseConnection.getConnection();
 
 	String tableName = "Loans";
-	String columns = " id, client_id, amount, approved, requested, interest, status ";
+	String columns = " id, client_id, amount, approved, requested, last_payment, interest, status ";
 
 	/*
 	 * Account(String id, Client client, boolean status, Money balance, Date
@@ -31,15 +31,15 @@ public class DBLoans implements CRUDInterface<Loan> {
 		id = UUID.randomUUID().toString();
 
 		DBLoans testObj = new DBLoans();
-		Loan loanTest = new Loan(id, testAcc, new Money(120, Currency.USD), date, 1);
+		Loan loanTest = new Loan(id, testAcc, new Money(120, Currency.USD), date, date, 1);
 //		testObj.create(loanTest);
 		Loan loanTest2 = new Loan(testAcc, new Money(120, Currency.USD), date, 1);
-		
+
 //		for (Account a: accounts) {
 //			System.out.println("A ccount" + accounts.size());
 //		}
-//		testObj.create(testAcc);
-//		testObj.delete(testAcc);
+//		testObj.create(loanTest);
+//		testObj.delete(loanTest);
 
 	}
 
@@ -48,7 +48,7 @@ public class DBLoans implements CRUDInterface<Loan> {
 	 */
 	@Override
 	public void create(Loan loan) throws SQLException {
-		String sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES (?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 		PreparedStatement statement = conn.prepareStatement(sql);
 
@@ -57,8 +57,9 @@ public class DBLoans implements CRUDInterface<Loan> {
 		statement.setFloat(3, loan.getAmount().getValue());
 		statement.setDate(4, loan.getApproved());
 		statement.setDate(5, loan.getRequested());
-		statement.setFloat(6, loan.getInterest());
-		statement.setString(7, loan.getStatus().str);
+		statement.setDate(6, loan.getLastPay());
+		statement.setFloat(7, loan.getInterest());
+		statement.setString(8, loan.getStatus().str);
 
 		int rowsInserted = statement.executeUpdate();
 
@@ -74,6 +75,28 @@ public class DBLoans implements CRUDInterface<Loan> {
 			return retrieveById(loan.getId());
 		}
 		return null;
+	}
+
+	/*
+	 * Returns this All Active loans from DB
+	 */
+	public ArrayList<Loan> retrieveRequestedLoans() throws SQLException {
+		ArrayList<Loan> loans = new ArrayList<Loan>();
+		String status = Status.Requested.str;
+		if (status != null) {
+			Loan loan = null;
+			PreparedStatement statement = conn
+					.prepareStatement("SELECT " + columns + " FROM " + tableName + " WHERE status = '" + status + "';");
+			ResultSet resultSet = statement.executeQuery();
+
+			while (resultSet.next()) {
+				String id = resultSet.getString("id");
+				loan = retrieveById(id);
+				loans.add(loan);
+			}
+
+		}
+		return loans;
 	}
 
 	/*
@@ -99,6 +122,43 @@ public class DBLoans implements CRUDInterface<Loan> {
 		return loans;
 	}
 
+	/*
+	 * Returns this All Loans from DB
+	 */
+	public ArrayList<Loan> retrieveLoans() throws SQLException {
+		ArrayList<Loan> loans = new ArrayList<Loan>();
+
+		Loan loan = null;
+		PreparedStatement statement = conn.prepareStatement("SELECT " + columns + " FROM " + tableName + ";");
+		ResultSet resultSet = statement.executeQuery();
+
+		while (resultSet.next()) {
+			String id = resultSet.getString("id");
+			loan = retrieveById(id);
+			loans.add(loan);
+		}
+		return loans;
+	}
+	
+
+	/*
+	 * Returns this All Loans that weren't paid the past >30 days from given date
+	 */
+	public ArrayList<Loan> retrieveLoans(Date date) throws SQLException {
+		ArrayList<Loan> loans = new ArrayList<Loan>();
+
+		Loan loan = null;
+		PreparedStatement statement = conn.prepareStatement("SELECT " + columns + " FROM " + tableName + ";");
+		ResultSet resultSet = statement.executeQuery();
+
+		while (resultSet.next()) {
+			String id = resultSet.getString("id");
+			loan = retrieveById(id);
+			loans.add(loan);
+		}
+		return loans;
+	}
+
 	@Override
 	public Loan retrieveById(String id) throws SQLException {
 		DBClient dbClientObj = new DBClient();
@@ -116,8 +176,8 @@ public class DBLoans implements CRUDInterface<Loan> {
 				Money amount = new Money(resultSet.getFloat("amount"), Currency.USD);
 				Date requested = resultSet.getDate("requested");
 				Float interest = resultSet.getFloat("interest");
-				loan = new Loan(id, account, amount, requested, interest);
-
+				Date lastPay = resultSet.getDate("last_payment");
+				loan = new Loan(id, account, amount, requested,lastPay, interest);
 				Status status = null;
 				String statusStr = resultSet.getString("status");
 				if (Status.Requested.equals(statusStr)) {
@@ -171,7 +231,7 @@ public class DBLoans implements CRUDInterface<Loan> {
 
 	@Override
 	public void updateById(String id) throws SQLException {
-		// TODO Auto-generated method stub
+		update(retrieveById(id));
 
 	}
 }

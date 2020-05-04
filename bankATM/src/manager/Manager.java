@@ -1,15 +1,14 @@
 package manager;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.sql.Date;
-import java.util.*;
 
 import account.*;
 import bankATM.*;
 import database.*;
 
-public class Manager
-		implements AccountController, LoanController, StockController, ServiceFeeController, InterestController {
+public class Manager implements Settings, LoanController, StockController, ServiceFeeController, InterestController {
 
 	private String id;
 	private Person person;
@@ -86,7 +85,7 @@ public class Manager
 
 	@Override
 	public void addStock(Stock stock) {
-		if(!stock.getName().isEmpty() && stock.getQuantity() > 0) {
+		if (!stock.getName().isEmpty() && stock.getQuantity() > 0) {
 			stock.addToDB();
 		} else {
 			System.out.println("Invalid Stock created.");
@@ -112,30 +111,6 @@ public class Manager
 	}
 
 	@Override
-	public boolean openAccount(Client client, Account account) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean closeAccount(Account account) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void collectMoneyFrom(Client client) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void collectMoneyFromAll() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void setSavingsInterest(float interest) {
 		// TODO Auto-generated method stub
 
@@ -143,6 +118,12 @@ public class Manager
 
 	@Override
 	public void setLoanInterest(float interest) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void payAllInterests() {
 		// TODO Auto-generated method stub
 
 	}
@@ -159,6 +140,51 @@ public class Manager
 		return null;
 	}
 
+	@Override
+	public ArrayList<Loan> getLoans() {
+		ArrayList<Loan> loans = null;
+		DBLoans dbObj = new DBLoans();
+		try {
+			loans = dbObj.retrieveLoans();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return loans;
+	}
+
+	/*
+	 * Auto Collect Payments for loans that didn't pay last 30 days. Auto-Collect
+	 * from Deposit Account.
+	 */
+	@Override
+	public void collectLoanPayment(Date date) throws SQLException {
+		ArrayList<Loan> loans = getLoans();
+		int currYear = date.getYear();
+		int currMonth = date.getMonth();
+		if (currMonth == 1) {
+			currYear--;
+		}
+		date.setMonth(currMonth - 1);
+		Date dueDate = new Date(currYear, currMonth, date.getDate());
+
+		for (Loan loan : loans) {
+			if (loan.getLastPay().before(dueDate)) { // Collect if last payment was more than 30 days ago
+				
+				Money amountDue = new Money(loan.getAmount().getValue(), Currency.USD);
+				Client client = loan.getAccount().getClient();
+				
+				client.payBank(client.getDepositAccount(), amountDue);
+				loan.payLoan(amountDue);
+			}
+		}
+		/*
+		 * if client didnt make month payment: collect payment else
+		 */
+
+	}
+
 	public String toString() {
 		return "Manager: " + person;
 	}
@@ -168,7 +194,7 @@ public class Manager
 		this.bank = bankObj.retrieveById("testBank");
 	}
 
-	public void updateBank(){
+	public void updateBank() {
 		DBBank bankObj = new DBBank();
 		try {
 			bankObj.update(bank);
@@ -177,4 +203,13 @@ public class Manager
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public void setCurrentDate(Date date) throws SQLException {
+		DBBank objDB = new DBBank();
+		Bank bank = objDB.retrieveById("testBank");
+		bank.setCurrentDate(date);
+		objDB.update(bank);
+	}
+
 }

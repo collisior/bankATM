@@ -245,8 +245,7 @@ public class Client {
 	}
 
 	public void requestLoan(Money amount) throws SQLException {
-		Account account = getLoansAccount();
-
+		
 	}
 
 	/*

@@ -131,14 +131,13 @@ public class DBSoldStocks implements CRUDInterface<SoldStock> {
 
 	@Override
 	public void update(SoldStock stock) throws SQLException {
-		// TODO Auto-generated method stub
-
+		delete(stock);
+		create(stock);
 	}
 
 	@Override
 	public void updateById(String id) throws SQLException {
-		// TODO Auto-generated method stub
-
+		update(retrieveById(id));
 	}
 
 }

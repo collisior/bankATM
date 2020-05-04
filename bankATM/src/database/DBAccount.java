@@ -104,6 +104,24 @@ public class DBAccount implements CRUDInterface<Account> {
 		return accounts;
 	}
 
+	/*
+	 * Returns this All Accounts from DB
+	 */
+	public ArrayList<Account> retrieveAccounts() throws SQLException {
+		ArrayList<Account> accounts = new ArrayList<Account>();
+
+		Account account = null;
+		PreparedStatement statement = conn.prepareStatement("SELECT " + columns + " FROM " + tableName + ";");
+		ResultSet resultSet = statement.executeQuery();
+
+		while (resultSet.next()) {
+			String id = resultSet.getString("id");
+			account = retrieveById(id);
+			accounts.add(account);
+		}
+		return accounts;
+	}
+
 	@Override
 	public Account retrieveById(String id) throws SQLException {
 		DBClient dbClientObj = new DBClient();
@@ -114,7 +132,7 @@ public class DBAccount implements CRUDInterface<Account> {
 		ResultSet resultSet = statement.executeQuery();
 
 		while (resultSet.next()) {
-			
+
 			if (resultSet.getString("id").equals(id)) {
 				Client client = dbClientObj.retrieveById(resultSet.getString("client_id"));
 
@@ -178,13 +196,13 @@ public class DBAccount implements CRUDInterface<Account> {
 
 	@Override
 	public void update(Account t) throws SQLException {
-		// TODO Auto-generated method stub
-
+		delete(t);
+		create(t);
 	}
 
 	@Override
 	public void updateById(String id) throws SQLException {
-		// TODO Auto-generated method stub
+		update(retrieveById(id));
 
 	}
 }

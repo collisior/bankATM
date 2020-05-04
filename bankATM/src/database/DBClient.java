@@ -1,9 +1,12 @@
 package database;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.UUID;
 
+import account.*;
 import bankATM.*;
+import manager.*;
 
 public class DBClient implements CRUDInterface<Client> {
 
@@ -30,7 +33,15 @@ public class DBClient implements CRUDInterface<Client> {
 
 		Client testClient = new Client(id, testPerson, date, "testEmail", "testPassword");
 
+		id = "c7577a78-ec82-4e04-85c6-468f02961888";
+		testClient = new Client(id, testPerson, date, "anotheremail", "testPassword");
+
 		testObj.retrieveById(id);
+		ArrayList<Client> clients = testObj.retrieveClients();
+		for (Client client : clients) {
+			System.out.println("Client: " + client.getEmail());
+		}
+
 //		testObj.create(testClient);
 //		testObj.delete(testClient);
 	}
@@ -119,6 +130,25 @@ public class DBClient implements CRUDInterface<Client> {
 		return client;
 	}
 
+	/*
+	 * Returns this All Clients from DB
+	 */
+	public ArrayList<Client> retrieveClients() throws SQLException {
+		ArrayList<Client> clients = new ArrayList<Client>();
+
+		Client client = null;
+		PreparedStatement statement = conn.prepareStatement("SELECT " + columns + " FROM " + tableName + ";");
+		ResultSet resultSet = statement.executeQuery();
+
+		while (resultSet.next()) {
+			String id = resultSet.getString("id");
+			client = retrieveById(id);
+			clients.add(client);
+		}
+
+		return clients;
+	}
+
 	@Override
 	public void delete(Client client) throws SQLException {
 		String sql = "DELETE FROM " + tableName + " WHERE id = '" + client.getId() + "'";
@@ -146,14 +176,14 @@ public class DBClient implements CRUDInterface<Client> {
 	}
 
 	@Override
-	public void update(Client t) throws SQLException {
-		// TODO Auto-generated method stub
+	public void update(Client client) throws SQLException {
 
+		delete(client);
+		create(client);
 	}
 
 	@Override
 	public void updateById(String id) throws SQLException {
-		// TODO Auto-generated method stub
-
+		update(retrieveById(id));
 	}
 }

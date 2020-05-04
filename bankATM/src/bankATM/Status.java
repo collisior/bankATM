@@ -15,7 +15,7 @@ public enum Status {
 	//SoldStock Status
 	Realized("Realized"), 
 	Unrealized("Unrealized"),
-	//Account Status
+	//Account Status, Loan Status
 	Closed("Closed"),
 	Open("Open");
 

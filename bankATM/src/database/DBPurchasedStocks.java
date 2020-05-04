@@ -150,7 +150,6 @@ public class DBPurchasedStocks implements CRUDInterface<PurchasedStock> {
 
 	@Override
 	public void updateById(String id) throws SQLException {
-		// TODO Auto-generated method stub
-
+		update(retrieveById(id));
 	}
 }

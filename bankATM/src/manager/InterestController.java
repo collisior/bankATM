@@ -6,4 +6,6 @@ public interface InterestController {
 	
 	public abstract void setLoanInterest(float interest);
 	
+	public abstract void payAllInterests();
+	
 }

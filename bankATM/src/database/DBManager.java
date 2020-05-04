@@ -117,8 +117,8 @@ public class DBManager implements CRUDInterface<Manager> {
 
 	@Override
 	public void update(Manager manager) throws SQLException {
-		// TODO Auto-generated method stub
-
+		delete(manager);
+		create(manager);
 	}
 
 	@Override
