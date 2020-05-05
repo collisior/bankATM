@@ -15,6 +15,7 @@ public class Client {
 	private Date created;
 	private String email;
 	private String password;
+	private Bank bank;
 
 	public Client(String id, Person person, Date created, String email, String password) {
 		this.setId(id);
@@ -22,6 +23,37 @@ public class Client {
 		this.setCreated(created);
 		this.setEmail(email);
 		this.setPassword(password);
+		this.setBank();
+	}
+
+	public void addToDB() {
+		DBClient dbObj = new DBClient();
+		try {
+			dbObj.create(this);
+		} catch (SQLException e) {
+			System.out.println("Couldn't add this Client to DB.");
+			e.printStackTrace();
+		}
+	}
+
+	public void updateDB() {
+		DBClient dbObj = new DBClient();
+		try {
+			dbObj.update(this);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void deleteDB() {
+		DBClient dbObj = new DBClient();
+		try {
+			dbObj.delete(this);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public String getId() {
@@ -70,10 +102,7 @@ public class Client {
 	 */
 	public void openDepositAccount() throws SQLException {
 		if (getAccountsOfType(Type.DepositAccount) == null) {
-			String newid = UUID.randomUUID().toString();
-			Date created = new Date(System.currentTimeMillis());
-			DepositAccount depositAccount = new DepositAccount(newid, this, Status.Open, new Money(0, Currency.USD),
-					created);
+			DepositAccount depositAccount = new DepositAccount(this);
 			depositAccount.open(this);
 		} else {
 			System.out.println("Client already have Deposit Account! No new needed!");
@@ -84,73 +113,83 @@ public class Client {
 	 * Creates Checking Account. Client can have up to ? Checking accounts. Default:
 	 * 1 Checking Account.
 	 */
-	public boolean openCheckingAccount() throws SQLException {
-		DBBank bankObj = new DBBank();
-		Bank bank = bankObj.retrieveById("testBank");
+	public String openCheckingAccount() throws SQLException {
 		Money serviceFee = bank.getOpenAccountFee();
-
+		String message = "";
 		// TODO: Ask Bank the number of Checking accounts this client ALLOWED to have
 		if (getAccountsOfType(Type.CheckingAccount) == null) {
 			CheckingAccount checkingAccount = new CheckingAccount(this);
-
+			message = "Success!";
 		} else {
 			System.out.println("Client already have Checking Account.");
-			return false;
+			message = "Client already have Checking Account.";
 		}
 		payBank(getDepositAccount(), serviceFee);
-		return true;
+		return message;
 	}
 
 	/*
 	 * Creates Savings Account. Client can have up to ? Savings accounts. Default: 1
 	 * Savings Account.
 	 */
-	public boolean openSavingsAccount() throws SQLException {
+	public String openSavingsAccount() throws SQLException {
 		DBBank bankObj = new DBBank();
 		Bank bank = bankObj.retrieveById("testBank");
 		Money serviceFee = bank.getOpenAccountFee();
-
-		// TODO: Ask Bank the number of Savings accounts this client ALLOWED to have
+		String message = "";
 		if (getAccountsOfType(Type.SavingsAccount) == null) {
 			SavingsAccount savingsAccount = new SavingsAccount(this);
+			message = "Success!";
 		} else {
 			System.out.println("Client already have Savings Account.");
-			return false;
+			message = "Client already have Savings Account. Can have only 1 Savings Account.";
 		}
 		payBank(getDepositAccount(), serviceFee);
-		return true;
+		return message;
 	}
 
 	/*
 	 * Creates Security Account. Client can have up to ? Security accounts. Default:
 	 * 1 Security Account.
 	 */
-	public boolean openSecurityAccount() throws SQLException {
-		Money serviceFee = getBank().getOpenAccountFee();
-		// TODO: Ask Bank the number of Savings accounts this client ALLOWED to have
-		if (getAccountsOfType(Type.SecurityAccount) == null) {
-			SecurityAccount securityAccount = new SecurityAccount(this);
+	public String openSecurityAccount() throws SQLException {
+		Money serviceFee = bank.getOpenAccountFee();
+		String message = "";
+		if (getAccountsOfType(Type.SavingsAccount) == null) {
+			message = "Can't open Security Account becuase you don't have Savings Account.";
 		} else {
-			System.out.println("Client already have Security Account. Can have only 1 Security Account");
-			return false;
+			SavingsAccount savingsAccount = (SavingsAccount) getAccountsOfType(Type.SavingsAccount).get(0);
+			if (savingsAccount.getBalance().compareTo(bank.getAllowedBalanceToOpenSecurityAccount()) < 0) {
+				System.out.println("Not enough balance in Savings to qualify opening Security Account");
+				message = "Not enough balance in Savings to qualify opening Security Account";
+			}
+			if (getAccountsOfType(Type.SecurityAccount) == null) {
+				SecurityAccount securityAccount = new SecurityAccount(this);
+				message = "Success!";
+			} else {
+				System.out.println("Client already have Security Account. Can have only 1 Security Account");
+				message = "Client already have Security Account. Can have only 1 Security Account";
+			}
+			payBank(getDepositAccount(), serviceFee);
 		}
-		payBank(getDepositAccount(), serviceFee);
-		return true;
+
+		return message;
 	}
 
 	/*
 	 * Creates Loans Account. Client can have up to ? Loans accounts. Default: 1
 	 * Loans Account.
 	 */
-	public boolean openLoansAccount() throws SQLException {
-		// TODO: Ask Bank the number of Savings accounts this client ALLOWED to have
+	public String openLoansAccount() throws SQLException {
+		String message = "";
 		if (getAccountsOfType(Type.LoansAccount) == null) {
 			LoansAccount loansAccount = new LoansAccount(this, new Money(0, Currency.USD));
+			message = "Success!";
 		} else {
 			System.out.println("Client already have Loans Account. Can have only 1 Loans Account.");
-			return false;
+			message = "Client already have Loans Account. Can have only 1 Loans Account.";
 		}
-		return true;
+		return message;
 	}
 
 	/*
@@ -211,25 +250,30 @@ public class Client {
 	 * Close Account. Client can close account if balance >= 0 (remaining balance is
 	 * moved to Deposit Account).
 	 */
-	public boolean closeAccount(Account account) throws SQLException {
-		Money serviceFee = getBank().getCloseAccountFee();
+	public String closeAccount(Account account) throws SQLException {
+		Money serviceFee = bank.getCloseAccountFee();
+		String message = "";
 		Account depositAccount = getDepositAccount();
 		if (account.getBalance().compareTo(serviceFee) < 0) {
 			System.out.println("Not enough balance to pay Close-Account fees.");
-			return false;
+			message = "Not enough balance to pay Close-Account fees.";
 		}
 		if (account.getType().equals(Type.DepositAccount)) {
 			System.out.println("Client can't close Deposit Account.");
+			message = "Client can't close Deposit Account.";
 		} else if (account.getType().equals(Type.CheckingAccount) || account.getType().equals(Type.SavingsAccount)) {
 
 			Money amount = account.getBalance();
 			Transfer transfer = account.transfer(amount.subtract(serviceFee), depositAccount);
 			if (transfer != null) {
+				message = "Success: Account is Closed!";
 				account.close(this);
+			} else {
+				message = "Error: Try again.";
 			}
 		}
 		payBank(depositAccount, serviceFee);
-		return true;
+		return message;
 	}
 
 	public ArrayList<Transaction> getTransactions() throws SQLException {
@@ -245,7 +289,7 @@ public class Client {
 	}
 
 	public void requestLoan(Money amount) throws SQLException {
-		
+
 	}
 
 	/*
@@ -263,14 +307,14 @@ public class Client {
 		return person + ", email: " + email;
 	}
 
-	public void updateDB() throws SQLException {
-		DBClient dbObj = new DBClient();
-		dbObj.update(this);
-	}
-
-	public Bank getBank() throws SQLException {
-		DBBank bankObj = new DBBank();
-		return bankObj.retrieveById("testBank");
+	public void setBank() {
+		DBBank objDB = new DBBank();
+		try {
+			this.bank = objDB.retrieveById("testBank");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

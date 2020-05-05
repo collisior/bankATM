@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import account.Account;
 import account.CheckingAccount;
 import bankATM.*;
+import database.DBBank;
 
 public class Transfer extends Transaction implements ServiceFee {
 
@@ -23,31 +24,21 @@ public class Transfer extends Transaction implements ServiceFee {
 		setDestination(destination);
 		setType(Type.Transfer);
 	}
-	
 
 	@Override
 	public Money getServiceFee() {
+		DBBank dbObj = new DBBank();
+		Bank bank = null;
 		Money serviceFee = null;
 		try {
-			serviceFee = ((Client) account.getClient()).getBank().getTransferFee();
+			bank = dbObj.retrieveById("testBank");
+			serviceFee = bank.getTransferFee();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if (account instanceof CheckingAccount) {
-			try {
-				serviceFee = serviceFee.add(account.getClient().getBank().getCheckingAccountFee());
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
+		serviceFee = serviceFee.add(bank.getCheckingAccountFee());
 		return serviceFee;
-	}
-
-	@Override
-	public void setServiceFee(Money serviceFee) {
 	}
 
 	public Account getDestination() {
@@ -59,7 +50,7 @@ public class Transfer extends Transaction implements ServiceFee {
 	}
 
 	public String getInfo() {
-		String info = getType() + ": from " + getAccount() + " to " + getDestination() + " "+ getAmount() + " ("
+		String info = getType() + ": from " + getAccount() + " to " + getDestination() + " " + getAmount() + " ("
 				+ getCreated() + ")";
 		return info;
 	}

@@ -28,7 +28,7 @@ public class PurchasedStock {
 	}
 
 	public PurchasedStock(Stock stock, Account account, int quantity) {
-		this(getNewId(), stock, account, stock.getPrice(), quantity, getNewCreated());
+		this(getNewId(), stock, account, stock.getPrice(), quantity, getCurrentDate());
 		addToDB();
 	}
 
@@ -96,6 +96,7 @@ public class PurchasedStock {
 
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
+		updateDB();
 	}
 
 	public Type getType() {
@@ -110,8 +111,22 @@ public class PurchasedStock {
 		return created;
 	}
 
-	private static Date getNewCreated() {
-		return new Date(System.currentTimeMillis());
+	private static Date getCurrentDate() {
+		DBBank dbObj = new DBBank();
+		Bank bank = null;
+		Date now = null;
+		try {
+			bank = dbObj.retrieveById("testBank");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (bank != null) {
+			now = bank.getCurrentDate();
+		} else {
+			now = new Date(System.currentTimeMillis());
+		}
+		return now;
 	}
 
 	public void setCreated(Date created) {
@@ -134,13 +149,13 @@ public class PurchasedStock {
 		if (quantity > this.quantity || quantity <= 0) {
 			return false; // invalid quantity of stocks!
 		}
+		//Create Sold Stock Object, add to DB
 		SoldStock soldStock = new SoldStock(stock, account, purchasedPrice, quantity);
 
 		this.setQuantity(this.getQuantity() - quantity);
 
 		Money totalSoldPrice = new Money(this.getStock().getPrice().getValue() * quantity, Currency.USD);
 		account.deposit(totalSoldPrice);
-		updateDB();
 
 		if (this.getQuantity() == 0) {
 			deleteDB();

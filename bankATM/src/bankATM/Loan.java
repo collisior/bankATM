@@ -5,7 +5,9 @@ import java.sql.SQLException;
 import java.util.*;
 
 import account.*;
+import bankATM.Currency;
 import database.*;
+import transaction.*;
 
 /*
  *  Note: Loan amount is negative.
@@ -34,8 +36,8 @@ public class Loan implements Interest {
 
 	// Constructing and Creating new Loan (Adding to DBs)
 	public Loan(Account account, Money amount, Date requested, float interest) {
-		this(getNewId(), account, amount, getNewDate(), getNewDate(), interest);
-		if (amount.getValue() < -1000) { // Approve loans without request if amount < 1000
+		this(getNewId(), account, amount, getCurrentDate(), getCurrentDate(), interest);
+		if (amount.getValue() > 1000) { // Approve loans without request if amount < 1000
 			this.setStatus(Status.Approved);
 			this.setApproved(requested);
 		}
@@ -48,6 +50,26 @@ public class Loan implements Interest {
 			dbObj.create(this);
 		} catch (SQLException e) {
 			System.out.println("Couldn't add this Loan to DB.");
+			e.printStackTrace();
+		}
+	}
+
+	public void updateDB() {
+		DBLoans dbObj = new DBLoans();
+		try {
+			dbObj.update(this);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void deleteDB() {
+		DBLoans dbObj = new DBLoans();
+		try {
+			dbObj.delete(this);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -72,12 +94,32 @@ public class Loan implements Interest {
 		this.account = account;
 	}
 
+	/*
+	 * Sets fixed Loans interest. So, in future if bank raise Loans Interest - the
+	 * Client will still have his initial loans interest rate.
+	 */
+	public void setInterest(float interest) {
+		DBBank dbObj = new DBBank();
+		Bank bank = null;
+		try {
+			bank = dbObj.retrieveById("testBank");
+			this.interest = bank.getLoansInterest();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public float getInterest() {
+		return this.interest;
+	}
+
 	public Money getAmount() {
-		return amount;
+		return this.amount;
 	}
 
 	public void setAmount(Money amount) {
-		this.amount = new Money(-1 * amount.getValue(), amount.getCurrency());
+		this.amount = amount;
 	}
 
 	public Date getRequested() {
@@ -88,8 +130,22 @@ public class Loan implements Interest {
 		this.requested = requested;
 	}
 
-	private static Date getNewDate() {
-		return new Date(System.currentTimeMillis());
+	private static Date getCurrentDate() {
+		DBBank dbObj = new DBBank();
+		Bank bank = null;
+		Date now = null;
+		try {
+			bank = dbObj.retrieveById("testBank");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (bank != null) {
+			now = bank.getCurrentDate();
+		} else {
+			now = new Date(System.currentTimeMillis());
+		}
+		return now;
 	}
 
 	public Date getApproved() {
@@ -107,30 +163,58 @@ public class Loan implements Interest {
 
 	public void setStatus(Status status) {
 		this.status = status;
+		updateDB();
 	}
 
+	/*
+	 * Calculate amount Due with interest included.
+	 */
 	@Override
-	public float getInterest() {
-		return interest;
+	public void applyInterest() {
+		Date today = getCurrentDate();
+
+		int numTimesInterestToApply = 0;
+
+		int currYear = today.getYear();
+		int currMonth = today.getMonth();
+		int lastPayYear = lastPay.getYear();
+		int lastPayMonth = lastPay.getMonth();
+
+		if (currYear < lastPayYear) {
+			return;
+		} else if (currMonth < lastPayMonth) {
+			return;
+		}
+
+		while (!(currYear == lastPayYear && currMonth == lastPayMonth)) {
+			if (lastPayYear == 12) {
+				lastPayYear++;
+				lastPayMonth = 1;
+			} else {
+				lastPayMonth++;
+			}
+			numTimesInterestToApply++;
+		}
+		float totalDue = amount.getValue();
+
+		while (numTimesInterestToApply != 0) {
+			totalDue = totalDue * interest;
+		}
+		setAmount(new Money(totalDue, Currency.USD));
 	}
 
-	@Override
-	public void setInterest(float interest) {
-		this.interest = interest;
-	}
-
-	public boolean payLoan(Money amount) throws SQLException {
-		if (amount.getValue() > 0 && amount.getValue() <= getAmount().getValue()) {
-			this.setAmount(getAmount().add(amount));
+	/*
+	 * Pay loan from given account to Bank.
+	 */
+	public boolean payLoan(Money amountToPay) throws SQLException {
+		if (amountToPay.getValue() > 0 && amountToPay.getValue() <= getAmount().getValue()) {
+			this.setAmount(getAmount().subtract(amountToPay));
+			this.setLastPay(getCurrentDate());
+			Transaction loanPayment = new LoanPayment(account, amountToPay, Status.Completed);
 			updateDB();
 			return true;
 		}
 		return false;
-	}
-
-	public void updateDB() throws SQLException {
-		DBLoans dbObj = new DBLoans();
-		dbObj.update(this);
 	}
 
 	public Date getLastPay() {

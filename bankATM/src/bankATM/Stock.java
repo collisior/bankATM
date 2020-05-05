@@ -25,7 +25,7 @@ public class Stock {
 	}
 	
 	public Stock( String name, Money price, int quantity) {
-		this(getNewId(), name, price, quantity, getNewCreated(), Status.Open);
+		this(getNewId(), name, price, quantity, getCurrentDate(), Status.Open);
 	}
 
 	public void addToDB() {
@@ -33,7 +33,27 @@ public class Stock {
 		try {
 			dbObj.create(this);
 		} catch (SQLException e) {
-			System.out.println("Couldn't add this Transaction to DB.");
+			System.out.println("Couldn't add this Purchased Stock to DB.");
+			e.printStackTrace();
+		}
+	}
+
+	public void deleteDB() {
+		DBStocks dbObj = new DBStocks();
+		try {
+			dbObj.delete(this);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void updateDB() {
+		DBStocks dbObj = new DBStocks();
+		try {
+			dbObj.update(this);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -84,25 +104,32 @@ public class Stock {
 	public Date getCreated() {
 		return created;
 	}
-	private static Date getNewCreated() {
-		return new Date(System.currentTimeMillis());
+
+	private static Date getCurrentDate() {
+		DBBank dbObj = new DBBank();
+		Bank bank = null;
+		Date now = null;
+		try {
+			bank = dbObj.retrieveById("testBank");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (bank != null) {
+			now = bank.getCurrentDate();
+		} else {
+			now = new Date(System.currentTimeMillis());
+		}
+		return now;
 	}
 
 	public void setCreated(Date created) {
 		this.created = created;
+		
 	}
 
 	public String toString() {
 		return name;
 	}
 	
-	public void updateDB() {
-		DBStocks dbObj = new DBStocks();
-		try {
-			dbObj.update(this);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 }

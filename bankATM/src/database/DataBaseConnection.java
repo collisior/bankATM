@@ -1,6 +1,9 @@
 package database;
 
 import java.sql.*;
+import java.util.UUID;
+
+import bankATM.Person;
 
 public class DataBaseConnection {
 	/** The name of the MySQL account to use (or empty for anonymous) */
@@ -46,6 +49,15 @@ public class DataBaseConnection {
 	public static void main(String[] args) throws SQLException {
 		// Testing connection
 		getConnection();
+		
+		DBPerson testObj = new DBPerson();
+		String id = UUID.randomUUID().toString();
+		Date date = new Date(2001, 12, 1);
+		
+		Person testPerson = new Person(id, "Bob", "Sponge", date, "000-crasty-phone", "bikini", "bottom");
+		testObj.create(testPerson);
+		testObj.delete(testPerson);
+		
 	}
 
 }

@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import account.*;
 import bankATM.*;
+import database.DBBank;
 
 public class Withdraw extends Transaction implements ServiceFee {
 
@@ -21,26 +22,18 @@ public class Withdraw extends Transaction implements ServiceFee {
 
 	@Override
 	public Money getServiceFee() {
+		DBBank dbObj = new DBBank();
+		Bank bank = null;
 		Money serviceFee = null;
 		try {
-			serviceFee = account.getClient().getBank().getWithdrawFee();
+			bank = dbObj.retrieveById("testBank");
+			serviceFee = bank.getWithdrawFee();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if (account instanceof CheckingAccount) {
-			try {
-				serviceFee = serviceFee.add(account.getClient().getBank().getCheckingAccountFee());
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
+		serviceFee = serviceFee.add(bank.getCheckingAccountFee());
 		return serviceFee;
 	}
 
-	@Override
-	public void setServiceFee(Money serviceFee) {
-	}
 }

@@ -31,7 +31,7 @@ public abstract class Transaction implements ServiceFee {
 	 * Constructor To create New Transaction. Adds to DB.
 	 */
 	Transaction(Account account, Money amount, Status status) {
-		this(getNewId(), account, amount, getNewCreated(), status);
+		this(getNewId(), account, amount, getCurrentDate(), status);
 		addToDB();
 	}
 
@@ -41,6 +41,26 @@ public abstract class Transaction implements ServiceFee {
 			dbObj.create(this);
 		} catch (SQLException e) {
 			System.out.println("Couldn't add this Transaction to DB.");
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateDB() {
+		DBTransaction dbObj = new DBTransaction();
+		try {
+			dbObj.update(this);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void deleteDB() {
+		DBTransaction dbObj = new DBTransaction();
+		try {
+			dbObj.delete(this);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -60,9 +80,23 @@ public abstract class Transaction implements ServiceFee {
 	public Date getCreated() {
 		return created;
 	}
-
-	private static Date getNewCreated() {
-		return new Date(System.currentTimeMillis());
+	
+	private static Date getCurrentDate() {
+		DBBank dbObj = new DBBank();
+		Bank bank = null;
+		Date now = null;
+		try {
+			bank = dbObj.retrieveById("testBank");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (bank != null) {
+			now = bank.getCurrentDate();
+		} else {
+			now = new Date(System.currentTimeMillis());
+		}
+		return now;
 	}
 
 	private void setCreated(Date created) {
@@ -75,6 +109,7 @@ public abstract class Transaction implements ServiceFee {
 
 	public void setAmount(Money amount) {
 		this.amount = amount;
+		updateDB();
 	}
 
 	public String toString() {
@@ -103,6 +138,7 @@ public abstract class Transaction implements ServiceFee {
 
 	public void setStatus(Status status) {
 		this.status = status;
+		updateDB();
 	}
 
 	public Type getType() {
@@ -118,13 +154,4 @@ public abstract class Transaction implements ServiceFee {
 		return info;
 	}
 
-	public void updateDB() {
-		DBTransaction dbObj = new DBTransaction();
-		try {
-			dbObj.update(this);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 }

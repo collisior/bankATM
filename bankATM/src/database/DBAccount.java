@@ -20,7 +20,11 @@ public class DBAccount implements CRUDInterface<Account> {
 	 * created)
 	 */
 	public static void main(String[] args) throws SQLException {
-
+		Money amount = new Money(120, Currency.USD);
+		System.out.println(amount);
+		Money amount1 = new Money(amount.getValue() * (float) 1.1,  Currency.USD);
+		System.out.println(amount1);
+		
 		String id = UUID.randomUUID().toString();
 
 		Date date = new Date(2001, 12, 1);
@@ -44,6 +48,7 @@ public class DBAccount implements CRUDInterface<Account> {
 //		for (Account a: accounts) {
 //			System.out.println("A ccount" + accounts.size());
 //		}
+		System.out.println(testAcc +" "+ testAcc2);
 //		testObj.create(testAcc);
 //		testObj.delete(testAcc);
 

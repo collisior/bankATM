@@ -13,6 +13,12 @@ public class LoanPayment extends Transaction {
 		super(id, account, amount, created, status);
 		setType(getType());
 	}
+	
+//	Transaction(Account account, Money amount, Status status) {
+	public LoanPayment(Account account, Money amount, Status status) {
+		super(account, amount, status);
+		setType(getType());
+	}
 
 	public Loan getLoan() {
 		return loan;
@@ -30,12 +36,6 @@ public class LoanPayment extends Transaction {
 	public Money getServiceFee() {
 		// TODO Auto-generated method stub
 		return new Money(0, Currency.USD);
-	}
-
-	@Override
-	public void setServiceFee(Money serviceFee) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

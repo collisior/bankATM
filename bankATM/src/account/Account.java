@@ -41,6 +41,27 @@ public abstract class Account implements OpenClose {
 			e.printStackTrace();
 		}
 	}
+	
+	public void updateDB() {
+		DBAccount dbObj = new DBAccount();
+		try {
+			dbObj.update(this);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void deleteDB() {
+		DBAccount dbObj = new DBAccount();
+		try {
+			dbObj.delete(this);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public String getId() {
 		return id;
 	}
@@ -67,6 +88,7 @@ public abstract class Account implements OpenClose {
 
 	public void setStatus(Status status) {
 		this.status = status;
+		this.updateDB();
 	}
 
 	public Money getBalance() {
@@ -75,6 +97,7 @@ public abstract class Account implements OpenClose {
 
 	public void setBalance(Money balance) {
 		this.balance = balance;
+		this.updateDB();
 	}
 
 	public Date getCreated() {
@@ -86,6 +109,7 @@ public abstract class Account implements OpenClose {
 
 	public void setCreated(Date created) {
 		this.created = created;
+		this.updateDB();
 	}
 
 	public String toString() {
@@ -120,6 +144,7 @@ public abstract class Account implements OpenClose {
 		} else {
 			System.out.println("Error! Deposit Failed.");
 		}
+		this.updateDB();
 		return deposit;
 	}
 
@@ -139,6 +164,7 @@ public abstract class Account implements OpenClose {
 			transfer = new Transfer(this, amount, destination, Status.Cancelled);
 			System.out.println("Invalid Amount of money to transfer! Exceeds your Account balance.");
 		}
+		this.updateDB();
 		return transfer;
 	}
 
@@ -162,6 +188,7 @@ public abstract class Account implements OpenClose {
 				withdraw.setStatus(Status.Cancelled); // not enough to pay service fee
 			}
 		}
+		this.updateDB();
 		return withdraw; // if null -> failed Withdraw: Invalid amount
 	}
 
@@ -185,13 +212,5 @@ public abstract class Account implements OpenClose {
 		return info;
 	}
 
-	public void updateDB() {
-		DBAccount dbObj = new DBAccount();
-		try {
-			dbObj.update(this);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+
 }

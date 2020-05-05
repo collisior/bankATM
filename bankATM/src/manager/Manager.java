@@ -59,28 +59,31 @@ public class Manager implements Settings, LoanController, StockController, Servi
 	@Override
 	public void setWithdrawServiceFee(Money fee) {
 		bank.setWithdrawFee(fee);
-
+		bank.updateDB();
 	}
 
 	@Override
 	public void setTranserServiceFee(Money fee) {
 		bank.setTransferFee(fee);
-		;
+		bank.updateDB();
 	}
 
 	@Override
 	public void setDepositServiceFee(Money fee) {
 		bank.setDepositFee(fee);
+		bank.updateDB();
 	}
 
 	@Override
 	public void setCloseAccountFee(Money fee) {
 		bank.setCloseAccountFee(fee);
+		bank.updateDB();
 	}
 
 	@Override
 	public void setOpenAccountFee(Money fee) {
 		bank.setOpenAccountFee(fee);
+		bank.updateDB();
 	}
 
 	@Override
@@ -113,29 +116,37 @@ public class Manager implements Settings, LoanController, StockController, Servi
 	@Override
 	public void setSavingsInterest(float interest) {
 		// TODO Auto-generated method stub
-
+		bank.updateDB();
 	}
 
 	@Override
 	public void setLoanInterest(float interest) {
 		// TODO Auto-generated method stub
-
+		bank.updateDB();
 	}
 
+	/*
+	 * Pay interest rate to all Savings Account.
+	 */
 	@Override
 	public void payAllInterests() {
-		// TODO Auto-generated method stub
-
+		float savingsInterest = bank.getSavingsInterest();
+		Type type = Type.SavingsAccount;
+		ArrayList<Account> accounts = this.getAccountsOfType(type);
+		for (Account account : accounts) {
+			((SavingsAccount) account).applyInterest();
+		}
 	}
 
 	@Override
-	public boolean approveLoan(Account account) {
-
-		return false;
+	public boolean approveLoan(Loan loan) {
+		loan.setStatus(Status.Approved);
+		loan.setApproved(bank.getCurrentDate());
+		return true;
 	}
 
 	@Override
-	public Loan issueLoan(Account account) {
+	public Loan issueLoan(Loan loan) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -171,33 +182,46 @@ public class Manager implements Settings, LoanController, StockController, Servi
 
 		for (Loan loan : loans) {
 			if (loan.getLastPay().before(dueDate)) { // Collect if last payment was more than 30 days ago
-				
-				Money amountDue = new Money(loan.getAmount().getValue(), Currency.USD);
 				Client client = loan.getAccount().getClient();
-				
+
+				Money totalAmountDue = loan.getAmount();
+				Money amountDue = new Money(loan.getAmount().getValue() * (float) 0.05, Currency.USD);
+				// if deposit balance <= 0, then apply more interest
+				if (client.getDepositAccount().getBalance().getValue() <= 0) {
+					loan.setAmount(new Money(loan.getAmount().getValue() * (float) 1.05, Currency.USD));
+				} // if 5% of loan <= deposit balance, then apply more interest and empty Deposit
+					// Account
+				else if (client.getDepositAccount().getBalance().getValue() < amountDue.getValue()) {
+					amountDue = client.getDepositAccount().getBalance();
+					loan.payLoan(amountDue);
+					loan.setAmount(new Money(loan.getAmount().getValue() * (float) 1.05, Currency.USD));
+				} // collect 5% of loan due, and apply more interest
+				else {
+					loan.payLoan(amountDue);
+					loan.setAmount(new Money(loan.getAmount().getValue() * (float) 1.05, Currency.USD));
+				}
+
+				new Money(loan.getAmount().getValue(), Currency.USD);
+
 				client.payBank(client.getDepositAccount(), amountDue);
 				loan.payLoan(amountDue);
+
 			}
 		}
 		/*
 		 * if client didnt make month payment: collect payment else
 		 */
-
+		bank.updateDB();
 	}
 
 	public String toString() {
 		return "Manager: " + person;
 	}
 
-	public void setBank() throws SQLException {
-		DBBank bankObj = new DBBank();
-		this.bank = bankObj.retrieveById("testBank");
-	}
-
-	public void updateBank() {
-		DBBank bankObj = new DBBank();
+	public void setBank() {
+		DBBank objDB = new DBBank();
 		try {
-			bankObj.update(bank);
+			this.bank = objDB.retrieveById("testBank");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -206,10 +230,32 @@ public class Manager implements Settings, LoanController, StockController, Servi
 
 	@Override
 	public void setCurrentDate(Date date) throws SQLException {
-		DBBank objDB = new DBBank();
-		Bank bank = objDB.retrieveById("testBank");
 		bank.setCurrentDate(date);
-		objDB.update(bank);
+		bank.updateDB();
+	}
+
+	/*
+	 * Returns List of Specified Type Accounts
+	 * Checking/Savings/Deposit/Security/Security/Loans)
+	 */
+	public ArrayList<Account> getAccountsOfType(Type type) {
+		DBAccount dbObj = new DBAccount();
+		ArrayList<Account> accounts = new ArrayList<Account>();
+		try {
+			for (Account account : dbObj.retrieveAccounts()) {
+				if (account.getType().equals(type)) {
+					accounts.add(account);
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (accounts.isEmpty()) {
+			System.out.println("No " + type + " accounts found associated with this Client.");
+			return null;
+		}
+		return accounts;
 	}
 
 }

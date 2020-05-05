@@ -20,15 +20,15 @@ public class Deposit extends Transaction {
 		setType(Type.Deposit);
 	}
 
-
+	public Type getType() {
+		return Type.Deposit;
+	}
 	/*
-	 * Deposit service fee is 0
+	 * Deposit service fee is 0.
 	 */
 	@Override
-	public Money getServiceFee() {		
+	public Money getServiceFee() {
 		return new Money(0, Currency.USD);
 	}
-	@Override
-	public void setServiceFee(Money serviceFee) {
-	}
+	
 }

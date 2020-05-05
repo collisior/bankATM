@@ -33,7 +33,7 @@ public class SoldStock {
 	}
 
 	public SoldStock(Stock stock, Account account, Money purchasedPrice, int quantity) {
-		this(getNewId(), stock, account, purchasedPrice, stock.getPrice(), quantity, getNewCreated());
+		this(getNewId(), stock, account, purchasedPrice, stock.getPrice(), quantity, getCurrentDate());
 		addToDB();
 	}
 
@@ -110,6 +110,7 @@ public class SoldStock {
 
 	public void setStatus(Status status) {
 		this.status = status;
+		updateDB();
 	}
 
 	public Type getType() {
@@ -124,8 +125,22 @@ public class SoldStock {
 		return created;
 	}
 
-	private static Date getNewCreated() {
-		return new Date(System.currentTimeMillis());
+	private static Date getCurrentDate() {
+		DBBank dbObj = new DBBank();
+		Bank bank = null;
+		Date now = null;
+		try {
+			bank = dbObj.retrieveById("testBank");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (bank != null) {
+			now = bank.getCurrentDate();
+		} else {
+			now = new Date(System.currentTimeMillis());
+		}
+		return now;
 	}
 
 	public void setCreated(Date created) {

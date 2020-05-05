@@ -11,9 +11,9 @@ public interface LoanController {
 	
 	public abstract ArrayList<Loan> getLoans();
 
-	public abstract boolean approveLoan(Account account);
+	public abstract boolean approveLoan(Loan loan);
 
-	public abstract Loan issueLoan(Account account);
+	public abstract Loan issueLoan(Loan loan);
 	
 	public abstract void collectLoanPayment(Date date) throws SQLException;
 }

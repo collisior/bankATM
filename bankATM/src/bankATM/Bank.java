@@ -3,6 +3,8 @@ package bankATM;
 import java.sql.Date;
 import java.sql.SQLException;
 
+import database.DBAccount;
+import database.DBBank;
 import database.DBClient;
 import manager.*;
 
@@ -18,6 +20,7 @@ public class Bank {
 	private Money openAccountFee;
 	private float loansInterest;
 	private Money balance;
+	private Money allowedBalanceToOpenSecurityAccount;
 	private Date currentDate;
 
 	public Bank(String name, Money checkingAccountFee, Money withdrawFee, float savingsInterest, float loansInterest,
@@ -32,6 +35,36 @@ public class Bank {
 		setCloseAccountFee(closeAccount);
 		setOpenAccountFee(openAccount);
 		setDepositFee(depositFee);
+	}
+
+	public void addToDB() {
+		DBBank dbObj = new DBBank();
+		try {
+			dbObj.create(this);
+		} catch (SQLException e) {
+			System.out.println("Couldn't add this Account to DB.");
+			e.printStackTrace();
+		}
+	}
+
+	public void updateDB() {
+		DBBank dbObj = new DBBank();
+		try {
+			dbObj.update(this);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void deleteDB() {
+		DBBank dbObj = new DBBank();
+		try {
+			dbObj.delete(this);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public String toString() {
@@ -138,5 +171,14 @@ public class Bank {
 
 	public void setDepositFee(Money depositFee) {
 		this.depositFee = depositFee;
+	}
+
+	public Money getAllowedBalanceToOpenSecurityAccount() {
+//		return allowedBalanceToOpenSecurityAccount;
+		return new Money(100000, Currency.USD);
+	}
+
+	public void setAllowedBalanceToOpenSecurityAccount(Money allowedBalanceToOpenSecurityAccount) {
+		this.allowedBalanceToOpenSecurityAccount = allowedBalanceToOpenSecurityAccount;
 	}
 }

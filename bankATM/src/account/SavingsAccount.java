@@ -10,8 +10,6 @@ import transaction.Transfer;
 
 public class SavingsAccount extends Account implements Interest {
 
-	private float interest = 0;
-
 	public SavingsAccount(String id, Client client, Status status, Money balance, Date created) {
 		super(id, client, status, balance, created);
 		setType(Type.SavingsAccount);
@@ -21,18 +19,19 @@ public class SavingsAccount extends Account implements Interest {
 		super(client);
 		setType(Type.SavingsAccount);
 		updateDB();
-
 	}
 
 	@Override
-	public float getInterest() {
-		// TODO Auto-generated method stub
-		return interest;
-	}
-
-	@Override
-	public void setInterest(float interest) {
-		this.interest = interest;
+	public void applyInterest() {
+		DBBank dbObj = new DBBank();
+		Bank bank = null;
+		try {
+			bank = dbObj.retrieveById("testBank");
+			this.setBalance(new Money(getBalance().getValue() * (float) (1 + bank.getSavingsInterest()), Currency.USD));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
