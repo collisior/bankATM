@@ -21,7 +21,7 @@ public class LoansAccount extends Account {
 		super(client);
 		setType(Type.LoansAccount);
 		setBalance(balance);
-		updateDB();
+		addToDB();
 	}
 	
 	public ArrayList<Loan> getAllLoans() throws SQLException {

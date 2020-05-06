@@ -85,6 +85,7 @@ public class Bank {
 
 	public void setCheckingAccountFee(Money checkingAccountFee) {
 		this.checkingAccountFee = checkingAccountFee;
+//		updateDB();
 	}
 
 	public Money getWithdrawFee() {
@@ -93,6 +94,7 @@ public class Bank {
 
 	public void setWithdrawFee(Money withdrawFee) {
 		this.withdrawFee = withdrawFee;
+//		 updateDB();
 	}
 
 	public float getSavingsInterest() {
@@ -101,6 +103,7 @@ public class Bank {
 
 	public void setSavingsInterest(float savingsInterest) {
 		this.savingsInterest = savingsInterest;
+//		updateDB();
 	}
 
 	public float getLoansInterest() {
@@ -109,6 +112,7 @@ public class Bank {
 
 	public void setLoansInterest(float loansInterest) {
 		this.loansInterest = loansInterest;
+//		updateDB();
 	}
 
 	public Money getBalance() {
@@ -117,10 +121,12 @@ public class Bank {
 
 	public void setBalance(Money balance) {
 		this.balance = balance;
+//		updateDB();
 	}
 
 	public void addToBalance(Money balance) {
 		setBalance(this.balance.add(balance));
+//		updateDB();
 	}
 
 	public Date getCurrentDate() {
@@ -129,6 +135,7 @@ public class Bank {
 
 	public void setCurrentDate(Date currentDate) {
 		this.currentDate = currentDate;
+//		updateDB();
 	}
 
 	public Money getCloseAccountFee() {
@@ -137,6 +144,7 @@ public class Bank {
 
 	public void setCloseAccountFee(Money closeAccountFee) {
 		this.closeAccountFee = closeAccountFee;
+//		updateDB();
 	}
 
 	public Money getOpenAccountFee() {
@@ -145,6 +153,7 @@ public class Bank {
 
 	public void setOpenAccountFee(Money openAccountFee) {
 		this.openAccountFee = openAccountFee;
+//		updateDB();
 	}
 
 	public Money getTransferFee() {
@@ -154,6 +163,7 @@ public class Bank {
 
 	public void setTransferFee(Money transferFee) {
 		this.transferFee = transferFee;
+//		updateDB();
 	}
 
 	/*
@@ -171,6 +181,7 @@ public class Bank {
 
 	public void setDepositFee(Money depositFee) {
 		this.depositFee = depositFee;
+		updateDB();
 	}
 
 	public Money getAllowedBalanceToOpenSecurityAccount() {
@@ -180,5 +191,6 @@ public class Bank {
 
 	public void setAllowedBalanceToOpenSecurityAccount(Money allowedBalanceToOpenSecurityAccount) {
 		this.allowedBalanceToOpenSecurityAccount = allowedBalanceToOpenSecurityAccount;
+//		updateDB();
 	}
 }

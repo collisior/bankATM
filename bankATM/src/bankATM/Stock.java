@@ -26,6 +26,7 @@ public class Stock {
 	
 	public Stock( String name, Money price, int quantity) {
 		this(getNewId(), name, price, quantity, getCurrentDate(), Status.Open);
+		addToDB();
 	}
 
 	public void addToDB() {

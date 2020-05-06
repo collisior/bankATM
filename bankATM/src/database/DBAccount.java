@@ -10,7 +10,7 @@ import bankATM.*;
 
 public class DBAccount implements CRUDInterface<Account> {
 
-	Connection conn = DataBaseConnection.getConnection();
+	static Connection conn = DataBaseConnection.getConnection();
 
 	String tableName = "Accounts";
 	String columns = " id, client_id, status, type, balance, created ";
@@ -48,7 +48,11 @@ public class DBAccount implements CRUDInterface<Account> {
 //		for (Account a: accounts) {
 //			System.out.println("A ccount" + accounts.size());
 //		}
-		System.out.println(testAcc +" "+ testAcc2);
+		
+		
+		id ="6bf61a1e-0697-4b08-a0ff-86d6cb2d70dr";
+		Account aa = testObj.retrieveById(id);
+		System.out.println(" "+ aa.getClient() + " <<<<<<");
 //		testObj.create(testAcc);
 //		testObj.delete(testAcc);
 
@@ -139,8 +143,13 @@ public class DBAccount implements CRUDInterface<Account> {
 		while (resultSet.next()) {
 
 			if (resultSet.getString("id").equals(id)) {
+				
+				System.out.println(" >> id account :"+ id);
+				
 				Client client = dbClientObj.retrieveById(resultSet.getString("client_id"));
-
+				
+				
+				System.out.println(" >> dbClientObj client account? :"+ client);
 				String type = resultSet.getString("type");
 				Status status = null;
 				String statusStr = resultSet.getString("status");
@@ -202,7 +211,9 @@ public class DBAccount implements CRUDInterface<Account> {
 	@Override
 	public void update(Account t) throws SQLException {
 		delete(t);
+		System.out.println("Account: " + t.getInfo());
 		create(t);
+		System.out.println("NEW Account: " + t.getInfo());
 	}
 
 	@Override

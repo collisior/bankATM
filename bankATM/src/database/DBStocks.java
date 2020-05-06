@@ -1,10 +1,12 @@
 package database;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import account.*;
 import bankATM.*;
+import transaction.Transaction;
 
 public class DBStocks implements CRUDInterface<Stock> {
 
@@ -56,9 +58,28 @@ public class DBStocks implements CRUDInterface<Stock> {
 	@Override
 	public Stock retrieve(Stock stock) throws SQLException {
 		// TODO Auto-generated method stub
-		return null;
+		return retrieveById(stock.getId());
 	}
 
+
+	/*
+	 * Returns this All transactions from DB
+	 */
+	public ArrayList<Stock> retrieveTransactions() throws SQLException {
+		ArrayList<Stock> stocks = new ArrayList<Stock>();
+		Stock stock = null;
+		PreparedStatement statement = conn.prepareStatement(
+				"SELECT " + columns + " FROM " + tableName + " ;");
+		ResultSet resultSet = statement.executeQuery();
+
+		while (resultSet.next()) {
+			String id = resultSet.getString("id");
+			stock = retrieveById(id);
+			stocks.add(stock);
+		}
+
+		return stocks;
+	}
 	@Override
 	public Stock retrieveById(String id) throws SQLException {
 

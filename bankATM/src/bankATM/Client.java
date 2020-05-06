@@ -18,11 +18,11 @@ public class Client {
 	private Bank bank;
 
 	public Client(String id, Person person, Date created, String email, String password) {
-		this.setId(id);
-		this.setPerson(person);
-		this.setCreated(created);
-		this.setEmail(email);
-		this.setPassword(password);
+		this.id = (id);
+		this.person = (person);
+		this.created = (created);
+		this.email = (email);
+		this.password =(password);
 		this.setBank();
 	}
 
@@ -180,14 +180,19 @@ public class Client {
 	 * Creates Loans Account. Client can have up to ? Loans accounts. Default: 1
 	 * Loans Account.
 	 */
-	public String openLoansAccount() throws SQLException {
+	public String openLoansAccount() {
 		String message = "";
-		if (getAccountsOfType(Type.LoansAccount) == null) {
-			LoansAccount loansAccount = new LoansAccount(this, new Money(0, Currency.USD));
-			message = "Success!";
-		} else {
-			System.out.println("Client already have Loans Account. Can have only 1 Loans Account.");
-			message = "Client already have Loans Account. Can have only 1 Loans Account.";
+		try {
+			if (getAccountsOfType(Type.LoansAccount) == null) {
+				LoansAccount loansAccount = new LoansAccount(this, new Money(0, Currency.USD));
+				message = "Success!";
+			} else {
+				System.out.println("Client already have Loans Account. Can have only 1 Loans Account.");
+				message = "Client already have Loans Account. Can have only 1 Loans Account.";
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return message;
 	}
@@ -205,6 +210,30 @@ public class Client {
 			return null;
 		}
 		return accounts;
+	}
+
+	/*
+	 * Returns this Client's total Balance
+	 */
+	public float getOverallBalance() {
+		ArrayList<Account> accounts = null;
+		try {
+			accounts = getAllAccounts();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		float totalBalance = 0;
+		if (accounts.isEmpty()) {
+			System.out.println("No accounts found associated with this Client.");
+		} else {
+			for (Account account : accounts) {
+				totalBalance += account.getBalance().getValue();
+			}
+		}
+		
+		
+		return totalBalance;
 	}
 
 	/*
@@ -228,22 +257,57 @@ public class Client {
 	/*
 	 * Returns this Client's Deposit Account
 	 */
-	public Account getDepositAccount() throws SQLException {
-		Account depositAccount = getAccountsOfType(Type.DepositAccount).get(0);
+	public Account getDepositAccount()  {
+		Account depositAccount = null;
+		try {
+			depositAccount = getAccountsOfType(Type.DepositAccount).get(0);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return depositAccount;
+	}
+	
+	/*
+	 * Returns this Client's savings Account
+	 */
+	public Account getSavingsAccount(){
+		Account account = null;
+		try {
+			account = getAccountsOfType(Type.SavingsAccount).get(0);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return account;
+	}
+	/*
+	 * Returns this Client's chekcing Account
+	 */
+	public Account getCheckingAccount() {
+		Account account = null;
+		try {
+			account = getAccountsOfType(Type.CheckingAccount).get(0);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return account;
 	}
 
 	/*
 	 * Returns this Client's Loans Account
 	 */
 	public Account getLoansAccount() throws SQLException {
-		Account loansAccount = null;
+		Account account = null;
 		ArrayList<Account> loansAccounts = getAccountsOfType(Type.LoansAccount);
-		if (loansAccounts.isEmpty()) {
+		if (!loansAccounts.isEmpty()) {
 			openLoansAccount();
-			loansAccount = getAccountsOfType(Type.LoansAccount).get(0);
+			account = getAccountsOfType(Type.LoansAccount).get(0);
 		}
-		return loansAccount;
+		System.out.println(" ");
+		System.out.println("loans account id = " +account +"\n");
+		return account;
 	}
 
 	/*

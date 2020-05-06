@@ -164,6 +164,19 @@ public class Manager implements Settings, LoanController, StockController, Servi
 		}
 		return loans;
 	}
+	
+	public ArrayList<Loan> getRequestedLoans() {
+		ArrayList<Loan> loans = null;
+		DBLoans dbObj = new DBLoans();
+		try {
+			loans = dbObj.retrieveRequestedLoans();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return loans;
+	}
 
 	/*
 	 * Auto Collect Payments for loans that didn't pay last 30 days. Auto-Collect
@@ -171,12 +184,22 @@ public class Manager implements Settings, LoanController, StockController, Servi
 	 */
 	@Override
 	public void collectLoanPayment(Date date) throws SQLException {
-		ArrayList<Loan> loans = getLoans();
+		DBLoans dbObj = new DBLoans();
+		ArrayList<Loan> loans = null;
+		try {
+			loans = dbObj.retrieveApprovedLoans();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		int currYear = date.getYear();
 		int currMonth = date.getMonth();
 		if (currMonth == 1) {
 			currYear--;
 		}
+		Money totalAmountDue = new Money(0, Currency.USD);
 		date.setMonth(currMonth - 1);
 		Date dueDate = new Date(currYear, currMonth, date.getDate());
 
@@ -184,7 +207,8 @@ public class Manager implements Settings, LoanController, StockController, Servi
 			if (loan.getLastPay().before(dueDate)) { // Collect if last payment was more than 30 days ago
 				Client client = loan.getAccount().getClient();
 
-				Money totalAmountDue = loan.getAmount();
+				
+				
 				Money amountDue = new Money(loan.getAmount().getValue() * (float) 0.05, Currency.USD);
 				// if deposit balance <= 0, then apply more interest
 				if (client.getDepositAccount().getBalance().getValue() <= 0) {
@@ -205,7 +229,9 @@ public class Manager implements Settings, LoanController, StockController, Servi
 
 				client.payBank(client.getDepositAccount(), amountDue);
 				loan.payLoan(amountDue);
-
+				
+				totalAmountDue.add(amountDue);
+				
 			}
 		}
 		/*
@@ -234,6 +260,27 @@ public class Manager implements Settings, LoanController, StockController, Servi
 		bank.updateDB();
 	}
 
+	/*
+	 * Returns List of Specified Type Accounts
+	 * Checking/Savings/Deposit/Security/Security/Loans)
+	 */
+	public ArrayList<Client> getClients() {
+		DBClient dbObj = new DBClient();
+		ArrayList<Client> clients = null;
+		try {
+			clients = dbObj.retrieveClients();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (clients.isEmpty()) {
+			System.out.println("No clients accounts found associated with this Client.");
+			return null;
+		}
+		return clients;
+	}
+	
 	/*
 	 * Returns List of Specified Type Accounts
 	 * Checking/Savings/Deposit/Security/Security/Loans)

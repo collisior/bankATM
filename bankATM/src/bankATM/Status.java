@@ -9,6 +9,7 @@ public enum Status {
 	//Loan Request/Approve Status
 	Requested("Requested"),
 	Approved("Approved"),
+	Rejected("Rejected"),
 	//Stock Status
 	Sold("Sold"), 
 	Purchased("Purchased"), 

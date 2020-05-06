@@ -18,7 +18,7 @@ public class SavingsAccount extends Account implements Interest {
 	public SavingsAccount(Client client) {
 		super(client);
 		setType(Type.SavingsAccount);
-		updateDB();
+		addToDB();
 	}
 
 	@Override

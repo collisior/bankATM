@@ -20,11 +20,11 @@ public class DBManager implements CRUDInterface<Manager> {
 		DBManager testObj = new DBManager();
 		DBPerson testObjPers = new DBPerson();
 		String id = null;
-		
+
 		id = "55878b5b-b306-4023-a4df-62f3fe6fe42b";
 		Person testPerson = testObjPers.retrieveById(id);
 		System.out.println("test P " + testPerson.getCity());
-		
+
 		id = UUID.randomUUID().toString();
 		id = "d93402af-81ae-42ac-8fbc-7e5b3da170ee";
 		Manager testmanager = new Manager(id, testPerson, "testEmail", "testPassword");
@@ -38,7 +38,7 @@ public class DBManager implements CRUDInterface<Manager> {
 	 */
 	@Override
 	public void create(Manager manager) throws SQLException {
-		String sql = "INSERT INTO " + tableName + " ("+ columns + ") VALUES (?, ?, ?, ?)";
+		String sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES (?, ?, ?, ?)";
 
 		PreparedStatement statement = conn.prepareStatement(sql);
 
@@ -57,7 +57,7 @@ public class DBManager implements CRUDInterface<Manager> {
 
 	@Override
 	public Manager retrieve(Manager manager) throws SQLException {
-		if (manager != null ) {
+		if (manager != null) {
 			return retrieveById(manager.getId());
 		}
 		return null;
@@ -68,7 +68,8 @@ public class DBManager implements CRUDInterface<Manager> {
 		DBPerson dbPersonObj = new DBPerson();
 
 		Manager manager = null;
-		PreparedStatement statement = conn.prepareStatement("SELECT " + columns + " FROM " + tableName+ " WHERE id = '" + id + "';");
+		PreparedStatement statement = conn
+				.prepareStatement("SELECT " + columns + " FROM " + tableName + " WHERE id = '" + id + "';");
 		ResultSet resultSet = statement.executeQuery();
 
 		while (resultSet.next()) {
@@ -83,6 +84,33 @@ public class DBManager implements CRUDInterface<Manager> {
 		}
 		if (manager == null) {
 			System.out.println("No manager with id: " + id);
+		} else {
+			System.out.println("A manager fetched successfully! Client: " + manager);
+		}
+		return manager;
+	}
+
+	public Manager retrieveByEmail(String email) throws SQLException {
+		DBPerson dbPersonObj = new DBPerson();
+
+		Manager manager = null;
+		PreparedStatement statement = conn
+				.prepareStatement("SELECT " + columns + " FROM " + tableName + " WHERE email = '" + email + "';");
+		ResultSet resultSet = statement.executeQuery();
+
+		while (resultSet.next()) {
+
+			if (resultSet.getString("email").equals(email)) {
+				String id = resultSet.getString("id");
+				Person person = dbPersonObj.retrieveById(resultSet.getString("person_id"));
+
+				String password = resultSet.getString("password");
+
+				manager = new Manager(id, person, email, password);
+			}
+		}
+		if (manager == null) {
+			System.out.println("No manager with id: " + email);
 		} else {
 			System.out.println("A manager fetched successfully! Client: " + manager);
 		}
@@ -126,6 +154,5 @@ public class DBManager implements CRUDInterface<Manager> {
 		// TODO Auto-generated method stub
 
 	}
-
 
 }

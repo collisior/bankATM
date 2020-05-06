@@ -23,6 +23,7 @@ public class Transfer extends Transaction implements ServiceFee {
 		super(account, amount, status);
 		setDestination(destination);
 		setType(Type.Transfer);
+		addToDB();
 	}
 
 	@Override

@@ -17,7 +17,7 @@ public class CheckingAccount extends Account implements ServiceFee {
 	public CheckingAccount(Client client) {
 		super(client);
 		setType(Type.CheckingAccount);
-		updateDB();
+		addToDB();
 	}
 
 	@Override
@@ -34,11 +34,6 @@ public class CheckingAccount extends Account implements ServiceFee {
 		return bank.getCheckingAccountFee();
 	}
 
-	@Override
-	public void setServiceFee(Money serviceFee) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void open(Client client) throws SQLException {

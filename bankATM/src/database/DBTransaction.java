@@ -36,7 +36,7 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 		Transaction testTransaction2 = new Transfer(id, testAcc, new Money(-12121, Currency.USD), date, Status.Pending,
 				testAcc);
 
-		testObj.create(testTransaction2);
+//		testObj.create(testTransaction2);
 		testObj.retrieveById(id);
 
 	}
@@ -49,15 +49,18 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 		String sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 		PreparedStatement statement = conn.prepareStatement(sql);
-
+		
 		statement.setString(1, transaction.getId());
 		statement.setString(2, transaction.getAccount().getId());
 		statement.setString(3, transaction.getAccount().getClient().getId());
 		statement.setFloat(4, transaction.getAmount().getValue());
 		statement.setDate(5, transaction.getCreated());
 		statement.setString(6, transaction.getStatus().str);
+		System.out.println("A new creating + "+transaction.getStatus().str );
+		System.out.println("A new creating + "+transaction.getType().str );
 		statement.setString(7, transaction.getType().str);
-
+		
+		System.out.println("A new creating + "+transaction.getType().str );
 		if (transaction instanceof Transfer) {
 			statement.setString(8, ((Transfer) transaction).getDestination().getId());
 		} else {
@@ -91,6 +94,9 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 
 			if (resultSet.getString("id").equals(id)) {
 				Account account = dbAccObj.retrieveById(resultSet.getString("account_id"));
+				
+				System.out.println(" >> dbAccObj Null account? :"+ account);
+				
 				Money amount = new Money(resultSet.getFloat("amount"), Currency.USD);
 				Date created = resultSet.getDate("created");
 				String statusStr = resultSet.getString("status");
@@ -113,7 +119,7 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 					transaction = new Deposit(id, account, amount, created, status);
 				} else if (Type.LoanPayment.equals(type)) {
 					transaction = new LoanPayment(id, account, amount, created, status);
-				} 
+				}
 			}
 		}
 		if (transaction == null) {
@@ -122,6 +128,25 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 			System.out.println("A transaction fetched successfully! Transaction: " + transaction);
 		}
 		return transaction;
+	}
+
+	/*
+	 * Returns this All transactions from DB
+	 */
+	public ArrayList<Transaction> retrieveTransactions() throws SQLException {
+		ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+		Transaction transaction = null;
+		PreparedStatement statement = conn.prepareStatement(
+				"SELECT " + columns + " FROM " + tableName + " ;");
+		ResultSet resultSet = statement.executeQuery();
+
+		while (resultSet.next()) {
+			String id = resultSet.getString("id");
+			transaction = retrieveById(id);
+			transactions.add(transaction);
+		}
+
+		return transactions;
 	}
 
 	/*

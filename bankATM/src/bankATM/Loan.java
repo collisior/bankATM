@@ -24,19 +24,19 @@ public class Loan implements Interest {
 	private Status status;
 
 	// Constructor for loan
-	public Loan(String id, Account account, Money amount, Date requested, Date lastPay, float interest) {
-		this.setId(id);
-		this.setAccount(account);
-		this.setAmount(amount);
-		this.setInterest(interest);
-		this.setRequested(requested);
-		this.setLastPay(lastPay);
-		this.setStatus(Status.Requested);
+	public Loan(String id, Account account, Money amount, Date requested, Date lastPay, float interest, Status status) {
+		this.id = (id);
+		this.account = (account);
+		this.amount = (amount);
+		this.interest = (interest);
+		this.requested= (requested);
+		this.lastPay =(lastPay);
+		this.setStatus(status);
 	}
 
 	// Constructing and Creating new Loan (Adding to DBs)
 	public Loan(Account account, Money amount, Date requested, float interest) {
-		this(getNewId(), account, amount, getCurrentDate(), getCurrentDate(), interest);
+		this(getNewId(), account, amount, getCurrentDate(), getCurrentDate(), interest, Status.Requested);
 		if (amount.getValue() > 1000) { // Approve loans without request if amount < 1000
 			this.setStatus(Status.Approved);
 			this.setApproved(requested);
@@ -87,6 +87,10 @@ public class Loan implements Interest {
 	}
 
 	public Account getAccount() {
+		if(account == null) {
+			System.out.print(" Account is null ");
+			
+		}
 		return account;
 	}
 
@@ -120,6 +124,7 @@ public class Loan implements Interest {
 
 	public void setAmount(Money amount) {
 		this.amount = amount;
+		updateDB();
 	}
 
 	public Date getRequested() {
@@ -154,6 +159,7 @@ public class Loan implements Interest {
 
 	public void setApproved(Date approved) {
 		this.approved = approved;
+		updateDB();
 		setStatus(Status.Approved);
 	}
 

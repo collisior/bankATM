@@ -18,6 +18,7 @@ public class LoanPayment extends Transaction {
 	public LoanPayment(Account account, Money amount, Status status) {
 		super(account, amount, status);
 		setType(getType());
+		addToDB();
 	}
 
 	public Loan getLoan() {

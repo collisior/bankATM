@@ -7,7 +7,7 @@ import bankATM.*;
 
 public class DBBank implements CRUDInterface<Bank> {
 
-	Connection conn = DataBaseConnection.getConnection();
+	static Connection conn = DataBaseConnection.getConnection();
 
 	String tableName = "Bank";
 	String columns = " name, checking_account_fee, withdraw_fee, savings_interest, loans_interest, close_account_fee, "
@@ -23,9 +23,9 @@ public class DBBank implements CRUDInterface<Bank> {
 		System.out.println("Current time: " + testBank.getCurrentDate());
 
 		
-//		testObj.create(testBank);
+		testObj.create(testBank);
 		
-		testBank = new Bank("testBank", new Money(3, Currency.USD), new Money(4, Currency.USD), (float) 0.1,
+		testBank = new Bank("testBank2", new Money(3, Currency.USD), new Money(4, Currency.USD), (float) 0.1,
 				(float) 0.2, new Money(2, Currency.USD), new Money(3, Currency.USD), new Money(12, Currency.USD),
 				new Money(5000000, Currency.USD), date);
 //		testObj.update(testBank);

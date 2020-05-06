@@ -23,8 +23,10 @@ public abstract class Transaction implements ServiceFee {
 		setCreated(created);
 		setAmount(amount);
 		setAccount(account);
+		System.out.println(" >> Null account? :"+ account);
 		setClient(account.getClient());
-		setStatus(status);
+		System.out.println(" >> Null client? :"+ client);
+		this.status = (status);
 	}
 
 	/*
@@ -32,7 +34,6 @@ public abstract class Transaction implements ServiceFee {
 	 */
 	Transaction(Account account, Money amount, Status status) {
 		this(getNewId(), account, amount, getCurrentDate(), status);
-		addToDB();
 	}
 
 	public void addToDB() {
@@ -109,7 +110,6 @@ public abstract class Transaction implements ServiceFee {
 
 	public void setAmount(Money amount) {
 		this.amount = amount;
-		updateDB();
 	}
 
 	public String toString() {
@@ -129,6 +129,7 @@ public abstract class Transaction implements ServiceFee {
 	}
 
 	public void setClient(Client client) {
+		System.out.println(" >> Null account? :"+ account);
 		this.client = client;
 	}
 
@@ -147,6 +148,7 @@ public abstract class Transaction implements ServiceFee {
 
 	public void setType(Type type) {
 		this.type = type;
+		updateDB();
 	}
 
 	public String getInfo() {

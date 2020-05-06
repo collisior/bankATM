@@ -17,7 +17,7 @@ public class DepositAccount extends Account {
 	public DepositAccount(Client client) {
 		super(client);
 		setType(Type.DepositAccount);
-		updateDB();
+		addToDB();
 	}
 
 	@Override
