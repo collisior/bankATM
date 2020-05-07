@@ -20,3 +20,7 @@ Beatrice Tanaga (U90936184)
 In preferred IDE create new Java project by Opening this Project folder from the file system.
 
 Locate to Main.java file in bankATM package, and run this Main.
+
+## Access GitHun
+
+https://github.com/collisior/bankATM
