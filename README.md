@@ -15,6 +15,11 @@ Chenhao Tao (U93652744)
 Beatrice Tanaga (U90936184)
 
 
+
+## Documentation
+[See Documentation File](https://github.com/collisior/bankATM/blob/master/bankATM/Documentation.pdf)
+
+
 ## How to run?
 
 In preferred IDE create new Java project by Opening this Project folder from the file system.
