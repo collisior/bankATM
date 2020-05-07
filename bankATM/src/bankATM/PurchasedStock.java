@@ -22,7 +22,7 @@ public class PurchasedStock {
 		setStock(stock);
 		setAccount(account);
 		setPurchasedPrice(purchasedPrice);
-		setQuantity(quantity);
+		this.quantity = (quantity);
 		setType(Type.PurchasedStock);
 		setCreated(created);
 	}

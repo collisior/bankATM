@@ -1,7 +1,10 @@
-package Account;
+package gui.Account;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
+
+import gui.Client.ClientHomePage;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,6 +43,7 @@ public class Success_Close_Account {
             public void actionPerformed(ActionEvent e) {
                 go_back.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 //                return to Clients Page Wait for Byran
+                ClientHomePage.placeButtons(null);
             }
         });
 

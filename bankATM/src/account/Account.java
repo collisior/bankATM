@@ -29,7 +29,6 @@ public abstract class Account implements OpenClose {
 	// Create new account for this client. Add to DB;
 	public Account(Client client) {
 		this(getNewId(), client, Status.Open, new Money(0, Currency.USD), getNewCreated());
-		addToDB();
 	}
 
 	public void addToDB() {
@@ -134,7 +133,7 @@ public abstract class Account implements OpenClose {
 	public Deposit deposit(Money amount)  {
 		Deposit deposit = null;
 		if (amount.getValue() > this.getBalance().getValue()) {
-			deposit = new Deposit(this, amount, Status.Pending);
+			deposit = new Deposit(this, amount, Status.Completed);
 			Money serviceFee = deposit.getServiceFee();
 			if (amount.compareTo(serviceFee) > 0) { // check if enough amount to pay service fee
 				try {
@@ -144,11 +143,10 @@ public abstract class Account implements OpenClose {
 					e.printStackTrace();
 				}
 				this.setBalance(this.getBalance().add(amount));
-				deposit.setStatus(Status.Completed);
+				
 			} else {
 				deposit.setStatus(Status.Cancelled); // invalid amount of money, not enough to pay service fee
 			}
-
 		} else {
 			System.out.println("Error! Deposit Failed.");
 		}

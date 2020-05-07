@@ -6,6 +6,7 @@ import account.*;
 import manager.*;
 import transaction.*;
 import database.*;
+import gui.Client.LoginPage;
 import bankATM.*;
 import bankATM.Currency;
 
@@ -446,6 +447,15 @@ public class ManagerHomePage {
 		JButton exitButton = new JButton("Exit");
 		exitButton.setBounds(400, 75, 100, 20);
 		panel.add(exitButton);
+		exitButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				LoginPage.placeButtons();
+			}
+
+		});
 
 		JButton accounts = new JButton("Accounts");
 		// upon clicking accounts, go to the Manage Accounts page (implement that

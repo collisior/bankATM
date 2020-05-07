@@ -1,4 +1,4 @@
-package Deposite;
+package gui.Deposite;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,10 +1,15 @@
-package Loan;
-
+package gui.Loan;
 import javax.swing.*;
+
+import account.*;
+import bankATM.Money;
+import gui.Client.ClientHomePage;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.sql.SQLException;
 
 public class Loan_Left {
     public static void main(String[] args) {
@@ -44,17 +49,24 @@ public class Loan_Left {
         go_back.setBackground(Color.ORANGE);
         panel.add(go_back);
 
-        JLabel display = new JLabel("Display Loan Left Here", SwingConstants.CENTER);
+        Money amount = null;
+		try {
+			amount = ClientHomePage.client.getLoansAccount().getBalance();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        JLabel display = new JLabel("Loans left to pay: " + amount, SwingConstants.CENTER);
         display.setBounds(125, 150, 275, 40);
         display.setOpaque(true);
         display.setBackground(Color.LIGHT_GRAY);
         panel.add(display);
 
-        JLabel currency1 = new JLabel("Currency", SwingConstants.CENTER);
-        currency1.setBounds(430, 150, 100, 40);
-        currency1.setOpaque(true);
-        currency1.setBackground(Color.LIGHT_GRAY);
-        panel.add(currency1);
+//        JLabel currency1 = new JLabel("Currency", SwingConstants.CENTER);
+//        currency1.setBounds(430, 150, 100, 40);
+//        currency1.setOpaque(true);
+//        currency1.setBackground(Color.LIGHT_GRAY);
+//        panel.add(currency1);
 
         frame.add(panel);
         frame.setVisible(true);

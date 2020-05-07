@@ -18,6 +18,7 @@ public class Deposit extends Transaction {
 	public Deposit(Account account, Money amount, Status status) {
 		super(account, amount, status);
 		setType(Type.Deposit);
+		System.out.println("Deposit being created.... ");
 		addToDB();
 	}
 

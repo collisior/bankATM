@@ -1,23 +1,37 @@
-package Account;
+package gui.Account;
 
-import Deposite.Deposite_Page;
+import gui.Client.ClientHomePage;
+import gui.Deposite.Deposite_Page;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
+
+import account.Account;
+import bankATM.Money;
+import database.DBAccount;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.sql.SQLException;
 
 public class Account_Close {
 
-    public static void main(String[] args) {
+	public static void main(String[] args) {
+		DBAccount b = new DBAccount();
+		Account a = null;
+		try {
+			a = b.retrieveById("6bf61a1e-0697-4b08-a0ff-86d6cb3d70bh");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		placeComponents(a);
+	}
+    public static void placeComponents(Account account) {
 
-        placeComponents();
-    }
-
-    public static void placeComponents() {
-
+    	Money m = account.getBalance();
         JFrame frame = new JFrame("Account Close");
         frame.setSize(650, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -33,7 +47,7 @@ public class Account_Close {
         withdraw_and_close_.setFont(f1);
         panel.add(withdraw_and_close_);
 
-        JButton go_back = new JButton("Go back");
+        JButton go_back = new JButton("Home");
         go_back.setBounds(80, 50, 100, 30);
         go_back.setOpaque(true);
         go_back.addActionListener(new ActionListener() {
@@ -41,6 +55,7 @@ public class Account_Close {
             public void actionPerformed(ActionEvent e) {
                 go_back.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 //                return to Clients Page Wait for Byran
+                ClientHomePage.placeButtons(null);
             }
         });
 
@@ -49,7 +64,7 @@ public class Account_Close {
         go_back.setBackground(Color.ORANGE);
         panel.add(go_back);
 
-        JButton money = new JButton("Withdraw remaining money and Close");
+        JButton money = new JButton("Withdraw remaining "+m+" and Close");
         money.setBounds(50, 150, 260, 100);
         money.setOpaque(true);
         money.addActionListener(new ActionListener() {
@@ -63,8 +78,8 @@ public class Account_Close {
         money.setBackground(Color.GRAY);
         panel.add(money);
 
-        JButton Withdraw = new JButton("Withdraw");
-        Withdraw.setBounds(150,350,125,30);
+        JButton Withdraw = new JButton("Withdraw and Close");
+        Withdraw.setBounds(100,350,220,30);
         Withdraw.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -73,6 +88,14 @@ public class Account_Close {
 //                Success_Close_Account.placeComponents();
 //                else:
 //                Failed_Close_Account.placeComponents();
+                
+                try {
+					account.close(ClientHomePage.client);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+                Success_Close_Account.placeComponents();
             }
         });
 
@@ -81,7 +104,7 @@ public class Account_Close {
         Withdraw.setBackground(Color.green);
         panel.add(Withdraw);
 
-        JButton money1 = new JButton("Transfer remaining money and Close");
+        JButton money1 = new JButton("Transfer remaining "+m+" and Close");
         money1.setBounds(340, 150, 260, 100);
         money1.setOpaque(true);
         money1.addActionListener(new ActionListener() {
@@ -95,16 +118,19 @@ public class Account_Close {
         money1.setBackground(Color.GRAY);
         panel.add(money1);
 
-        JButton Transfer = new JButton("Transfer");
-        Transfer.setBounds(375,350,125,30);
+        JButton Transfer = new JButton("Transfer and Close");
+        Transfer.setBounds(375,350,200,30);
         Transfer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Transfer.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-//                if sucess:
-//                Success_Close_Account.placeComponents();
-//                else:
-//                Failed_Close_Account.placeComponents();
+                try {
+					account.close(ClientHomePage.client);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+                Success_Close_Account.placeComponents();
             }
         });
 

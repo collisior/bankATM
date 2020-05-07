@@ -1,8 +1,16 @@
 package gui.Client;
+
 import account.*;
 import manager.*;
 import transaction.*;
 import database.*;
+import gui.Transfer.*;
+import gui.Withdraw.Withdraw_Page;
+import gui.Loan.*;
+import gui.Deposite.*;
+import gui.Account.*;
+import gui.MyTrans.*;
+import gui.Stock.Stock_Page;
 import bankATM.*;
 import bankATM.Currency;
 import javax.swing.*;
@@ -17,24 +25,41 @@ import java.util.*;
 public class ClientHomePage {
 
 	public static Client client = null;
-	
+
 	public static void setup() {
+		DBBank dbBankObj = new DBBank();
+		Bank bank = null;
+		try {
+			bank = dbBankObj.retrieveById("testBank");
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		LoginPage.bank = bank;
 		DBClient dbobj = new DBClient();
 		try {
 			client = dbobj.retrieveById("c7577a78-ec82-4e04-85c6-468f029617e6");
+			client = dbobj.retrieveById("c7577a78-ec82-4e04-85c6-468f02961888");
+			client = dbobj.retrieveById("c7577a78-ec82-4e04-85c6-468f029617e6");
+			client = dbobj.retrieveById("c7577a78-ec82-4e04-85c6-468f02961899");
+			client = dbobj.retrieveById("c7577a78-ec82-4e04-85c6-468f029617e6");			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		setup();
 		placeButtons(client);
 	}
 
 	public static void placeButtons(Client c) {
-		client = c;
+		if (client == null) {
+			client = c;
+		}
+
 		JFrame frame = new JFrame("Client Home");
 		// Setting the width and height of frame
 		frame.setSize(650, 500);
@@ -52,29 +77,12 @@ public class ClientHomePage {
 		managerHomePage.setBounds(180, 50, 200, 45);
 		panel.add(managerHomePage);
 
-		JButton settings = new JButton("Settings");
-		settings.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				createSettings();
-
-			}
-
-		});
-		settings.setBounds(400, 50, 100, 20);
-		panel.add(settings);
-
 		JButton exitButton = new JButton("Exit");
 		exitButton.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-
-				frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-
+				LoginPage.placeButtons();
 			}
 
 		});
@@ -83,13 +91,10 @@ public class ClientHomePage {
 
 		JButton accounts = new JButton("Accounts");
 		accounts.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-
 				ClientAccountInfo.displayAccounts();
-
 			}
 
 		});
@@ -99,22 +104,63 @@ public class ClientHomePage {
 		JButton loans = new JButton("Loans");
 		loans.setBounds(50, 160, 200, 35);
 		panel.add(loans);
+		loans.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				Loan_Page.placeComponents();
+			}
+		});
 
 		JButton serviceFee = new JButton("Withdraw");
 		serviceFee.setBounds(50, 200, 200, 35);
 		panel.add(serviceFee);
+		serviceFee.addActionListener(new ActionListener() {
 
-		JButton transactions = new JButton("Deposit");
-		transactions.setBounds(350, 120, 200, 35);
-		panel.add(transactions);
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				Withdraw_Page.placeComponents();
+			}
+		});
 
-		JButton stocks = new JButton("Transfer");
-		stocks.setBounds(350, 160, 200, 35);
+		JButton dep = new JButton("Deposit");
+		dep.setBounds(350, 120, 200, 35);
+		panel.add(dep);
+		dep.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				Deposite_Page.placeComponents();
+			}
+		});
+
+		JButton transfer = new JButton("Transfer");
+		transfer.setBounds(350, 160, 200, 35);
+		panel.add(transfer);
+		transfer.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				Transfer_Page.placeComponents();
+			}
+
+		});
+
+		JButton stocks = new JButton("Stocks");
+		stocks.setBounds(350, 200, 200, 35);
 		panel.add(stocks);
+		stocks.addActionListener(new ActionListener() {
 
-		JButton interestRate = new JButton("Stocks");
-		interestRate.setBounds(350, 200, 200, 35);
-		panel.add(interestRate);
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				Stock_Page.placeComponents();
+			}
+
+		});
 
 		JButton transactionHistory = new JButton("Transaction History");
 		transactionHistory.setBounds(180, 260, 200, 35);
@@ -124,8 +170,8 @@ public class ClientHomePage {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-
+				// Mytrans.placeComponents();
+				ALL_Trans.placeComponents(null);
 			}
 
 		});

@@ -1,4 +1,4 @@
-package gui.Loan;
+package gui.Stock;
 
 import javax.swing.*;
 
@@ -9,28 +9,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 
-public class Loan_Page {
+public class Stock_Page {
     public static void main(String[] args) {
+
         placeComponents();
     }
 
     public static void placeComponents() {
         // Creating instance of JFrame
-        JFrame frame = new JFrame("Loan Page");
+        JFrame frame = new JFrame("Stock Page");
         // Setting the width and height of frame
         frame.setSize(650, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         JPanel panel = new JPanel();
+
         panel.setLayout(null);
 
         Font f = new Font("Arial", Font.CENTER_BASELINE,14);
         Font f1 = new Font("Arial", Font.CENTER_BASELINE,19);
 
-        JLabel title = new JLabel("Loan Page ", SwingConstants.CENTER);
-        title.setBounds(200, 50, 250, 60);
-        title.setFont(f1);
-        panel.add(title);
+        JLabel withdraw_and_close_ = new JLabel("Stock Page ", SwingConstants.CENTER);
+        withdraw_and_close_.setBounds(200, 50, 250, 60);
+        withdraw_and_close_.setFont(f1);
+        panel.add(withdraw_and_close_);
 
         JButton go_back = new JButton("Home");
         go_back.setBounds(80, 50, 100, 30);
@@ -42,36 +43,36 @@ public class Loan_Page {
 				ClientHomePage.placeButtons(null);
 			}
 		});
-
         go_back.setFont(f);
         go_back.setBackground(Color.ORANGE);
         panel.add(go_back);
 
-        JButton request_a_loan = new JButton("Request a Loan");
-        request_a_loan.setBounds(175,150,300,60);
-        request_a_loan.setFont(f1);
-        request_a_loan.addActionListener(new ActionListener() {
+        JButton buyStock = new JButton("Buy Stock");
+        buyStock.setBounds(200,120,250,55);
+        buyStock.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                request_a_loan.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-                Loan_Request.placeComponents();
+                buyStock.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                Stock_Market.placeComponents();
             }
         });
 
-        panel.add(request_a_loan);
+        buyStock.setFont(f1);
+        panel.add(buyStock);
 
-        JButton pay_a_loan = new JButton("Pay a Loan");
-        pay_a_loan.setBounds(175,240,300,60);
-        pay_a_loan.setFont(f1);
-        pay_a_loan.addActionListener(new ActionListener() {
+        JButton sellStock = new JButton("Sell Stock");
+        sellStock.setBounds(200,190,250,55);
+        sellStock.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                pay_a_loan.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-                Loan_pay.placeComponents();
+                sellStock.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                My_Stock_Page.placeComponents();
             }
         });
 
-        panel.add(pay_a_loan);
+        sellStock.setFont(f1);
+        panel.add(sellStock);
+
 
         // adding panel to frame
         frame.add(panel);
@@ -80,6 +81,5 @@ public class Loan_Page {
          */
         // Setting the frame visibility to true
         frame.setVisible(true);
-
     }
 }

@@ -116,6 +116,24 @@ public class DBPurchasedStocks implements CRUDInterface<PurchasedStock> {
 		return stocks;
 	}
 
+	public ArrayList<PurchasedStock> retrieveAccountStocks(String account_id) throws SQLException {
+		ArrayList<PurchasedStock> stocks = new ArrayList<PurchasedStock>();
+		if (account_id != null) {
+
+			PurchasedStock stock = null;
+			PreparedStatement statement = conn.prepareStatement(
+					"SELECT " + columns + " FROM " + tableName + " WHERE account_id = '" + account_id + "';");
+			ResultSet resultSet = statement.executeQuery();
+
+			while (resultSet.next()) {
+				String id = resultSet.getString("id");
+				stock = retrieveById(id);
+				stocks.add(stock);
+			}
+		}
+		return stocks;
+	}
+	
 	@Override
 	public void delete(PurchasedStock stock) throws SQLException {
 		String sql = "DELETE FROM " + tableName + " WHERE id = '" + stock.getId() + "'";

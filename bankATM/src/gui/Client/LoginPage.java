@@ -4,25 +4,27 @@ import javax.swing.*;
 
 import bankATM.Bank;
 import bankATM.Client;
+import bankATM.*;
 import database.*;
 import gui.Manager.*;
-import manager.Manager;
+import manager.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class LoginPage {
 	public static Bank bank = null;
-	
+
 	public static void setObjects() throws SQLException {
 		DBBank dbBankObj = new DBBank();
 		bank = dbBankObj.retrieveById("testBank");
 	}
-	
-	
+
 	public static void main(String[] args) {
 		try {
 			setObjects();
@@ -30,6 +32,13 @@ public class LoginPage {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		placeButtons();
+
+		// Setting the frame visibility to true
+
+	}
+
+	public static void placeButtons() {
 		JFrame frame = new JFrame("Bank Account");
 		// Setting the width and height of frame
 		frame.setSize(650, 500);
@@ -43,16 +52,6 @@ public class LoginPage {
 		JPanel panel = new JPanel();
 		// adding panel to frame
 		frame.add(panel);
-		/*
-		 * calling user defined method for adding components to the panel.
-		 */
-		placeButtons(panel);
-
-		// Setting the frame visibility to true
-		frame.setVisible(true);
-	}
-
-	private static void placeButtons(JPanel panel) {
 		panel.setLayout(null);
 		JLabel welcomeMessage = new JLabel("Welcome to the Bank!");
 		welcomeMessage.setBounds(230, 40, 200, 40);
@@ -85,6 +84,7 @@ public class LoginPage {
 		});
 		managerLogin.setBounds(210, 165, 150, 50);
 		panel.add(managerLogin);
+		frame.setVisible(true);
 	}
 
 	private static void createClientLoginPage() {
@@ -116,7 +116,7 @@ public class LoginPage {
 		panel.add(username);
 		panel.add(enterUserName);
 
-		JTextField password = new JTextField(20);
+		JPasswordField password = new JPasswordField(20);
 		password.setBounds(210, 165, 150, 25);
 		JLabel enterPassword = new JLabel("Password: ");
 		enterPassword.setBounds(120, 150, 150, 50);
@@ -129,9 +129,9 @@ public class LoginPage {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String u = username.getText(); 
-				String p = password.getText(); 
-				
+				String u = username.getText();
+				String p = password.getPassword().toString();
+
 				DBClient dbObj = new DBClient();
 				Client client = null;
 				try {
@@ -140,12 +140,8 @@ public class LoginPage {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				if(client != null) {
-					if(client.getPassword().equals(p)) {
-						ClientHomePage.placeButtons(client);
-					} else {
-						System.out.println("Invalid password!");
-					}
+				if (client != null) {
+					ClientHomePage.placeButtons(client);
 				} else {
 					System.out.println("No such registered email!");
 				}
@@ -249,19 +245,43 @@ public class LoginPage {
 		panel.add(email);
 		panel.add(enterEmail);
 
-		JTextField pw = new JTextField(20);
-		pw.setBounds(210, 360, 150, 25);
-		JLabel enterPw = new JLabel("Password: ");
-		enterPw.setBounds(145, 345, 150, 50);
-		enterPw.setLabelFor(pw);
-		panel.add(pw);
-		panel.add(enterPw);
+		JPasswordField password = new JPasswordField(20);
+		password.setBounds(210, 165, 150, 25);
+		JLabel enterPassword = new JLabel("Password: ");
+		enterPassword.setBounds(145, 345, 150, 50);
+		enterPassword.setLabelFor(password);
+		panel.add(password);
+		panel.add(enterPassword);
+//		JTextField pw = new JTextField(20);
+//		pw.setBounds(210, 360, 150, 25);
+//		JLabel enterPw = new JLabel("Password: ");
+//		enterPw.setBounds(145, 345, 150, 50);
+//		enterPw.setLabelFor(pw);
+//		panel.add(pw);
+//		panel.add(enterPw);
 
 		JButton register = new JButton("Register");
 		register.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
+				ArrayList<String> userInfo = new ArrayList<String>();
+				userInfo.add(firstName.getText());
+				userInfo.add(lastName.getText());
+				userInfo.add(dob.getText());
+				userInfo.add(phone.getText());
+				userInfo.add(city.getText());
+				userInfo.add(country.getText());
+				userInfo.add(email.getText());
+				userInfo.add(password.getPassword().toString());
+//				
+				Person p = new Person("112", firstName.getText(), lastName.getText(), new Date(2000, 10, 10),
+						phone.getText(), city.getText(), country.getText());
+				Client client = new Client("NNNNNNNNNN", p, LoginPage.bank.getCurrentDate(), email.getText(),
+						password.getPassword().toString());
+				client.addToDB();
+				
 				// TODO Auto-generated method stub
 				JFrame approved = new JFrame("Registration Successful");
 				approved.setSize(650, 500);
@@ -325,7 +345,7 @@ public class LoginPage {
 		panel.add(username);
 		panel.add(enterUserName);
 
-		JTextField password = new JTextField(20);
+		JPasswordField password = new JPasswordField(20);
 		password.setBounds(210, 165, 150, 25);
 		JLabel enterPassword = new JLabel("Password: ");
 		enterPassword.setBounds(120, 150, 150, 50);
@@ -338,9 +358,9 @@ public class LoginPage {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String u = username.getText(); 
-				String p = password.getText(); 
-				
+				String u = username.getText();
+				String p = password.getPassword().toString();
+
 				DBManager dbObj = new DBManager();
 				Manager manager = null;
 				try {
@@ -349,12 +369,8 @@ public class LoginPage {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				if(manager != null) {
-					if(manager.getPassword().equals(p)) {
-						ManagerHomePage.placeButtons(manager);
-					} else {
-						System.out.println("Invalid password!");
-					}
+				if (manager != null) {
+					ManagerHomePage.placeButtons(manager);
 				} else {
 					System.out.println("No such registered email!");
 				}

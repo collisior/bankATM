@@ -294,7 +294,19 @@ public class Client {
 		}
 		return account;
 	}
-
+	/*
+	 * Returns this Security chekcing Account
+	 */
+	public Account getSecurityAccount() {
+		Account account = null;
+		try {
+			account = getAccountsOfType(Type.SecurityAccount).get(0);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return account;
+	}
 	/*
 	 * Returns this Client's Loans Account
 	 */

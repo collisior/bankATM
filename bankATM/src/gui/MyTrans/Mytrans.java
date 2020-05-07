@@ -6,6 +6,7 @@ import account.Account;
 import bankATM.Client;
 import database.DBClient;
 import database.DBTransaction;
+import gui.Client.ClientHomePage;
 import transaction.Transaction;
 
 import java.awt.*;
@@ -19,25 +20,22 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class Mytrans {
-
-	static Client client = null;
-
-	public static void setup() {
-		DBClient dbobj = new DBClient();
-		try {
-			client = dbobj.retrieveById("c7577a78-ec82-4e04-85c6-468f029617e6");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//	public static void setup() {
+//		DBClient dbobj = new DBClient();
+//		try {
+////			client = dbobj.retrieveById("c7577a78-ec82-4e04-85c6-468f029617e6");
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 
 	public static void main(String[] args) {
 		placeComponents();
 	}
 
 	public static void placeComponents() {
-		setup();
+//		setup();
 		JFrame frame = new JFrame("My Transaction Page");
 		frame.setSize(650, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -59,9 +57,8 @@ public class Mytrans {
 		go_back.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				go_back.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-				// Return to main page, Wait for Byran's code
-
+				// TODO Auto-generated method stub
+				ClientHomePage.placeButtons(null);
 			}
 		});
 
@@ -92,6 +89,7 @@ public class Mytrans {
 					Date d = Date.valueOf(s);
 					ALL_Trans.placeComponents(d);
 				}
+				ALL_Trans.placeComponents(new Date(0));
 
 			}
 		});

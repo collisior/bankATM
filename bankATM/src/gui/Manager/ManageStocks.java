@@ -79,7 +79,6 @@ public class ManageStocks {
 //		scroll.setBounds(10, 11, 455, 249);
 
 		frame.getContentPane().add(scroll);
-		frame.setLocationRelativeTo(null);
 
 		frame.setVisible(true);
 		;

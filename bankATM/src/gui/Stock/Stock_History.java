@@ -1,25 +1,20 @@
-package gui.Account;
+package gui.Stock;
 
 import javax.swing.*;
-import javax.swing.plaf.FontUIResource;
-
-import gui.Client.ClientHomePage;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 
-public class Failed_Close_Account {
-
+public class Stock_History {
     public static void main(String[] args) {
 
         placeComponents();
+
     }
 
     public static void placeComponents() {
-
-        JFrame frame = new JFrame("Failed to Close Account");
+        JFrame frame = new JFrame("My Stock History");
         frame.setSize(650, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -29,10 +24,10 @@ public class Failed_Close_Account {
         Font f = new Font("Arial", Font.CENTER_BASELINE,14);
         Font f1 = new Font("Arial", Font.CENTER_BASELINE,19);
 
-        JLabel failed_to_close_account = new JLabel("Failed to Close Account", SwingConstants.CENTER);
-        failed_to_close_account.setBounds(200, 50, 250, 60);
-        failed_to_close_account.setFont(f1);
-        panel.add(failed_to_close_account);
+        JLabel failed_deposit = new JLabel("My Stock Page", SwingConstants.CENTER);
+        failed_deposit.setBounds(200, 50, 250, 60);
+        failed_deposit.setFont(f1);
+        panel.add(failed_deposit);
 
         JButton go_back = new JButton("Go back");
         go_back.setBounds(80, 50, 100, 30);
@@ -41,8 +36,7 @@ public class Failed_Close_Account {
             @Override
             public void actionPerformed(ActionEvent e) {
                 go_back.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-//                return to Clients Page Wait for Byran
-                ClientHomePage.placeButtons(null);
+                Stock_Page.placeComponents();
             }
         });
 
@@ -50,9 +44,10 @@ public class Failed_Close_Account {
         go_back.setBackground(Color.ORANGE);
         panel.add(go_back);
 
-        JLabel money = new JLabel("Failed to Close Account.", SwingConstants.CENTER);
-        money.setBounds(150, 150, 350, 100);
+        JLabel money = new JLabel("Display Stock Info Here", SwingConstants.CENTER);
+        money.setBounds(150, 150, 350, 250);
         money.setOpaque(true);
+
 
         money.setFont(f1);
         money.setBackground(Color.GRAY);

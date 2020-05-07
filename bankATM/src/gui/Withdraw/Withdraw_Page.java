@@ -6,6 +6,7 @@ import account.*;
 import manager.*;
 import transaction.*;
 import database.*;
+import gui.Client.ClientHomePage;
 import bankATM.*;
 import bankATM.Currency;
 import java.awt.*;
@@ -59,6 +60,13 @@ public class Withdraw_Page {
 		go_back.setFont(f);
 		go_back.setBackground(Color.ORANGE);
 		panel.add(go_back);
+		go_back.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				ClientHomePage.placeButtons(null);
+			}
+		});
 
 		JLabel input = new JLabel("Choose account withdraw from", SwingConstants.CENTER);
 		input.setBounds(175, 120, 300, 60);

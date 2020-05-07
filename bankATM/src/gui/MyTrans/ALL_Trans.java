@@ -5,6 +5,7 @@ import javax.swing.*;
 import account.*;
 import bankATM.Client;
 import database.*;
+import gui.Client.ClientHomePage;
 import transaction.Transaction;
 
 import java.awt.*;
@@ -16,14 +17,11 @@ import java.util.ArrayList;
 import java.sql.Date;
 
 public class ALL_Trans {
-	
-
-	static Client client = null;
 
 	public static void setup() {
 		DBClient dbobj = new DBClient();
 		try {
-			client = dbobj.retrieveById("c7577a78-ec82-4e04-85c6-468f029617e6");
+			ClientHomePage.client = dbobj.retrieveById("c7577a78-ec82-4e04-85c6-468f029617e6");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -35,31 +33,34 @@ public class ALL_Trans {
 	}
 
 	public static void placeComponents(Date date) {
-		date = new Date(3910,02,10);
+		date = new Date(3910, 02, 10);
+
 		System.out.println("date" + date);
 		setup();
-		System.out.println("client id " + client.getId());
-		
+
 		DBTransaction tObj = new DBTransaction();
-		DBAccount taObj = new DBAccount();
 		ArrayList<Transaction> transactions = null;
 		try {
-			Account a = taObj.retrieveById("6bf61a1e-0697-4b08-a0ff-86d6cb3d70dr");
+			transactions = ClientHomePage.client.getTransactions();
 //			transactions = tObj.retrieveTransactions();
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		String str = "";
-//		for (Transaction t : transactions) {
-//			if (t.getCreated().getYear() == date.getYear() && t.getCreated().getMonth() == date.getMonth())
-//				str += t.getId() + ": \n" + t + "\n\n";
-//		}
-		for (int i =0; i<10; i++) {
-			str += " Hold \n\n\n";
+		int i = 0;
+		String[] it1 = new String[transactions.size()];
+		for (Transaction t : transactions) {
+			if (t != null ) {
+				
+				it1[i] = i+": " + t.getType() + " Amount " + t.getAmount() + " Date: " + t.getCreated();
+			}
+			i++;
+
 		}
-		
-	
+
+		JList<String> list = new JList<String>(it1);
+
 		JFrame frame = new JFrame("My Transaction");
 		frame.setSize(650, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -82,7 +83,8 @@ public class ALL_Trans {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				go_back.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-				Mytrans.placeComponents();
+//				Mytrans.placeComponents();
+				ClientHomePage.placeButtons(null);
 			}
 		});
 
@@ -92,15 +94,13 @@ public class ALL_Trans {
 
 		JTextArea textField = new JTextArea();
 
-		
 		textField.setText(str);
 
 		JLabel displayCurrent = new JLabel("Display All Transactions: ");
 		displayCurrent.setBounds(150, 110, 150, 40);
 		panel.add(displayCurrent);
 
-		Box box = Box.createVerticalBox();
-		JScrollPane scrollArea = new JScrollPane(box, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+		JScrollPane scrollArea = new JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollArea.setBounds(150, 150, 350, 230);
 		scrollArea.add(textField);
@@ -119,19 +119,17 @@ public class ALL_Trans {
 		frame.add(panel);
 		panel.setLayout(null);
 
-		JButton back = new JButton("Back");
-		back.addActionListener(new ActionListener() {
-
+		JButton go_back = new JButton("Back");
+		go_back.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-
+				go_back.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+//				Mytrans.placeComponents();
+				ClientHomePage.placeButtons(null);
 			}
-
 		});
-		back.setBounds(50, 20, 75, 50);
-		panel.add(back);
+		go_back.setBounds(50, 20, 75, 50);
+		panel.add(go_back);
 
 		JLabel displayCurrent = new JLabel("Transactios: ");
 		displayCurrent.setSize(650, 500);
@@ -141,7 +139,7 @@ public class ALL_Trans {
 		DBTransaction tObj = new DBTransaction();
 		ArrayList<Transaction> transactions = null;
 		try {
-			transactions = tObj.retrieveTransactions(Mytrans.client);
+			transactions = tObj.retrieveTransactions(ClientHomePage.client);
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

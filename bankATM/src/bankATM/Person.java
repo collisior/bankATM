@@ -1,6 +1,10 @@
 package bankATM;
 
 import java.sql.Date;
+import java.sql.SQLException;
+
+import database.DBClient;
+import database.DBPerson;
 
 public class Person {
 	private String id;
@@ -21,6 +25,15 @@ public class Person {
 		setCountry(country);
 	}
 
+	public void addToDB() {
+		DBPerson dbObj = new DBPerson();
+		try {
+			dbObj.create(this);
+		} catch (SQLException e) {
+			System.out.println("Couldn't add this PErson to DB.");
+			e.printStackTrace();
+		}
+	}
 
 	public String getId() {
 		return id;

@@ -6,6 +6,7 @@ import account.*;
 import manager.*;
 import transaction.*;
 import database.*;
+import gui.Client.ClientHomePage;
 import gui.Withdraw.Withdraw_Account;
 import bankATM.*;
 import bankATM.Currency;
@@ -58,6 +59,13 @@ public class Transfer_Page {
 		JButton go_back = new JButton("Home");
 		go_back.setBounds(80, 50, 100, 30);
 		go_back.setOpaque(true);
+		go_back.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				ClientHomePage.placeButtons(null);
+			}
+		});
 
 		go_back.setFont(f);
 		go_back.setBackground(Color.ORANGE);

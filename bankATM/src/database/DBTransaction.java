@@ -28,7 +28,7 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 		id = UUID.randomUUID().toString();
 		id = "df215b5d-066b-462b-91e4-462ee2395980";
 		DBTransaction testObj = new DBTransaction();
-		Transaction testTransaction = new Withdraw(id, testAcc, new Money(121, Currency.USD), date, Status.Pending);
+//		Transaction testTransaction = new Withdraw(id, testAcc, new Money(121, Currency.USD), date, Status.Pending);
 
 		// testObj.create(testTransaction);
 
@@ -36,6 +36,12 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 		Transaction testTransaction2 = new Transfer(id, testAcc, new Money(-12121, Currency.USD), date, Status.Pending,
 				testAcc);
 
+		id = "c7577a78-ec82-4e04-85c6-468f029617e6";
+		id = "c7577a78-ec82-4e04-85c6-468f02961800";
+		DBClient dc = new DBClient();
+		Client client = dc.retrieveById(id);
+		ArrayList<Transaction> ts = testObj.retrieveTransactions(client);
+		System.out.println(" TSSS = "+ts.size());
 //		testObj.create(testTransaction2);
 		testObj.retrieveById(id);
 
@@ -96,7 +102,9 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 				Account account = dbAccObj.retrieveById(resultSet.getString("account_id"));
 				
 				System.out.println(" >> dbAccObj Null account? :"+ account);
-				
+				if (account == null ) {
+					break;
+				}
 				Money amount = new Money(resultSet.getFloat("amount"), Currency.USD);
 				Date created = resultSet.getDate("created");
 				String statusStr = resultSet.getString("status");
@@ -110,6 +118,7 @@ public class DBTransaction implements CRUDInterface<Transaction> {
 					status = Status.Pending;
 				}
 
+				
 				if (Type.Withdraw.equals(type)) {
 					transaction = new Withdraw(id, account, amount, created, status);
 				} else if (Type.Transfer.equals(type)) {
