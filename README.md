@@ -21,6 +21,6 @@ In preferred IDE create new Java project by Opening this Project folder from the
 
 Locate to Main.java file in bankATM package, and run this Main.
 
-## Access GitHun
+## Link to Access on GitHub
 
 https://github.com/collisior/bankATM
